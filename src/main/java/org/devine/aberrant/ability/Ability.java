@@ -2,10 +2,12 @@ package org.devine.aberrant.ability;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.Data;
 import org.devine.aberrant.attribute.Attribute;
 import org.devine.aberrant.character.Character;
 
 @Entity
+@Data
 public class Ability {
 
     @Id

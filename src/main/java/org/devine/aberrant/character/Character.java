@@ -1,13 +1,12 @@
 package org.devine.aberrant.character;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 @Entity
+@Data
 public class Character {
 
     @Id
@@ -35,6 +34,8 @@ public class Character {
     @Column(name = "experience")
     private int experience;
 
-
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "character", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private CharacterAdditionalInfo info;
 
 }
