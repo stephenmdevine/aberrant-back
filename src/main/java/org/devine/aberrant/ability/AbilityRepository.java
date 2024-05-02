@@ -1,8 +1,8 @@
-package org.devine.aberrant.attributes;
+package org.devine.aberrant.ability;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AttributesRepository extends JpaRepository<Attributes, Integer> {
+public interface AbilityRepository extends JpaRepository<Ability, Integer> {
 }
