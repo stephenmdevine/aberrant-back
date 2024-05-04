@@ -5,13 +5,15 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.devine.aberrant.character.Character;
 
+import java.util.List;
+
 @Entity
 @Data
 public class Attribute {
 
     @Id
-    @GeneratedValue
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank
     @Size(max = 16)
@@ -23,13 +25,15 @@ public class Attribute {
     @Column(name = "value")
     private int value;
 
-    @Size(max = 32)
-    @Column(name = "quality")
-    private String quality;
+    @ManyToOne
+    @JoinColumn(name = "attribute_set_id")
+    private AttributeSet attributeSet;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn
-    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "character_id")
     private Character character;
+
+    @OneToMany(mappedBy = "attribute")
+    private List<Quality> qualities;
 
 }

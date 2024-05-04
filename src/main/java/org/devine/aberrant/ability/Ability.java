@@ -12,7 +12,7 @@ public class Ability {
 
     @Id
     @GeneratedValue
-    private int id;
+    private Long id;
 
     @NotBlank
     @Size(max = 32)
