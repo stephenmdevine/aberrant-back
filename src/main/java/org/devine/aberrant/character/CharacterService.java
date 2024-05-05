@@ -22,4 +22,8 @@ public interface CharacterService {
 
     Character allocateAttributePoints(Character character, AttributeSet attributeSet, Map<String, Integer> attributeValues, Map<String, String> qualityDetails) throws IllegalArgumentException;
 
+    Character allocateAbilityPoints(Character character, Map<String, Integer> abilityValues) throws IllegalArgumentException;
+
+    Character addSpecialtyToAbility(Character character, String abilityName, String specialtyName);
+
 }
