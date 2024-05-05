@@ -26,4 +26,8 @@ public interface CharacterService {
 
     Character addSpecialtyToAbility(Character character, String abilityName, String specialtyName);
 
+    Character allocateBackgroundPoints(Character character, Map<String, Integer> backgroundValues) throws IllegalArgumentException;
+
+    Character spendBonusPoints(Character character, Map<String, Integer> bonusPointSpending) throws IllegalArgumentException;
+
 }

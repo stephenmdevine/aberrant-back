@@ -24,8 +24,7 @@ public class Background {
     private int value;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn
-    @NotNull
+    @JoinColumn(name = "character_id")
     private Character character;
 
 }

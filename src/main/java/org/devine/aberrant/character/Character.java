@@ -52,6 +52,19 @@ public class Character {
     @Column(name = "description")
     private String description;
 
+// Additional Character Stats
+    @Column(name = "willpower")
+    private int willpower;
+
+    @Column(name = "quantum")
+    private int quantum;
+
+    @Column(name = "quantum_pool")
+    private int quantumPool;
+
+    @Column(name = "initiative")
+    private int initiative;
+
 // Character Point Info
     @Column(name = "attribute_points")
     private int attributePoints;
@@ -89,5 +102,11 @@ public class Character {
 
     @OneToMany(mappedBy = "character")
     private List<Power> powers;
+
+    @OneToMany(mappedBy = "character")
+    private List<Flaw> flaws;
+
+    @OneToMany(mappedBy = "character")
+    private List<Merit> merits;
 
 }
