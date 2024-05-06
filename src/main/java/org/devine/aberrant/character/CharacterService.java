@@ -30,4 +30,6 @@ public interface CharacterService {
 
     Character spendBonusPoints(Character character, Map<String, Integer> bonusPointSpending) throws IllegalArgumentException;
 
+    void spendNovaPoints(Character character, Map<String, Integer> novaPointSpending) throws IllegalArgumentException;
+
 }

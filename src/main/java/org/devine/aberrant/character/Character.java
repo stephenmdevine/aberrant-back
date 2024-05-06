@@ -54,10 +54,10 @@ public class Character {
 
 // Additional Character Stats
     @Column(name = "willpower")
-    private int willpower;
+    private int willpower = 3;
 
     @Column(name = "quantum")
-    private int quantum;
+    private int quantum = 1;
 
     @Column(name = "quantum_pool")
     private int quantumPool;
@@ -108,5 +108,34 @@ public class Character {
 
     @OneToMany(mappedBy = "character")
     private List<Merit> merits;
+
+    public Character() {
+//        Calculate initial initiative based on Dex and Wits
+        this.initiative = this.getAttributeValue("Dexterity") + this.getAttributeValue("Wits");
+    }
+
+//     Method to retrieve the value of a specific attribute by name
+    public int getAttributeValue(String attributeName) {
+        // Iterate through the list of attributes
+        for (Attribute attribute : attributes) {
+            if (attribute.getName().equalsIgnoreCase(attributeName)) {
+                return attribute.getValue();
+            }
+        }
+        // Return a default value or handle the case when the attribute is not found
+        return 0; // Default value if attribute not found
+    }
+
+//     Method to retrieve the value of a specific mega attribute by name
+    public int getMegaAttributeValue(String megaAttributeName) {
+        // Iterate through the list of attributes
+        for (MegaAttribute megaAttribute : megaAttributes) {
+            if (megaAttribute.getName().equalsIgnoreCase(megaAttributeName)) {
+                return megaAttribute.getValue();
+            }
+        }
+        // Return a default value or handle the case when the attribute is not found
+        return 0; // Default value if attribute not found
+    }
 
 }

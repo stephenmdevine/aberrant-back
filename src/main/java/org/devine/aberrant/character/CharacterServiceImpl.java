@@ -6,6 +6,7 @@ import org.devine.aberrant.attribute.Attribute;
 import org.devine.aberrant.attribute.AttributeSet;
 import org.devine.aberrant.attribute.Quality;
 import org.devine.aberrant.background.Background;
+import org.devine.aberrant.megaAttribute.Enhancement;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -230,6 +231,7 @@ public class CharacterServiceImpl implements CharacterService {
                     character.setBonusPoints(character.getBonusPoints() - pointsSpent + remainingAttributePoints);
 
                     break;
+
                 case "ability":
                     // Check if the ability name is provided in the spending map
                     String abilityName = entry.getKey();
@@ -255,6 +257,7 @@ public class CharacterServiceImpl implements CharacterService {
                     character.setBonusPoints(character.getBonusPoints() - pointsSpent + remainingAbilityPoints);
 
                     break;
+
                 case "background":
                     // Check if the background name is provided in the spending map
                     String backgroundName = entry.getKey();
@@ -279,6 +282,7 @@ public class CharacterServiceImpl implements CharacterService {
                     character.setBonusPoints(character.getBonusPoints() - pointsSpent);
 
                     break;
+
                 case "ability_specialty":
                     // Check if both ability name and specialty name are provided in the spending map
                     String anotherAbilityName = entry.getKey();
@@ -309,6 +313,94 @@ public class CharacterServiceImpl implements CharacterService {
 
                     break;
 
+                case "willpower":
+                    // Calculate the number of dots to increase for Willpower
+                    int willpowerDotsToIncrease = pointsSpent / 2; // 2 bonus points for one dot increase
+
+                    // Increase the Willpower value by the calculated dots
+                    int newWillpowerValue = character.getWillpower() + willpowerDotsToIncrease;
+                    character.setWillpower(newWillpowerValue);
+
+                    // Update the remaining bonus points
+                    int remainingWillpowerPoints = pointsSpent % 2; // Remaining points after spending on dots
+                    character.setBonusPoints(character.getBonusPoints() - pointsSpent + remainingWillpowerPoints);
+
+                    break;
+
+                case "quantum":
+                    // Calculate the number of dots to increase for Quantum
+                    int quantumDotsToIncrease = pointsSpent / 7; // 7 bonus points for one dot increase
+
+                    // Increase the Quantum value by the calculated dots
+                    int newQuantumValue = character.getQuantum() + quantumDotsToIncrease;
+                    character.setQuantum(newQuantumValue);
+
+                    // Update the remaining bonus points
+                    int remainingQuantumPoints = pointsSpent % 7; // Remaining points after spending on dots
+                    character.setBonusPoints(character.getBonusPoints() - pointsSpent + remainingQuantumPoints);
+
+                    break;
+
+                case "initiative":
+                    // Calculate the number of dots to increase for Initiative
+                    int initiativeDotsToIncrease = pointsSpent; // 1 bonus point for one dot increase
+
+                    // Increase the Initiative value by the calculated dots
+                    int newInitiativeValue = character.getInitiative() + initiativeDotsToIncrease;
+                    character.setInitiative(newInitiativeValue);
+
+                    // Update the remaining bonus points
+                    character.setBonusPoints(character.getBonusPoints() - pointsSpent);
+
+                    break;
+
+                case "merit":
+                    // Check if the merit name and value are provided in the spending map
+                    String meritName = entry.getKey();
+                    Integer meritValue = entry.getValue();
+                    if (meritName == null || meritName.isEmpty() || meritValue == null || meritValue < 1 || meritValue > 7) {
+                        throw new IllegalArgumentException("Invalid merit name or value");
+                    }
+
+                    // Create and add the merit
+                    Merit merit = new Merit();
+                    merit.setName(meritName);
+                    merit.setValue(meritValue);
+                    merit.setCharacter(character);
+                    character.getMerits().add(merit);
+
+                    // Deduct bonus points for adding a merit
+                    character.setBonusPoints(character.getBonusPoints() - meritValue);
+
+                    break;
+
+                case "flaw":
+                    // Check if the flaw name and value are provided in the spending map
+                    String flawName = entry.getKey();
+                    Integer flawValue = entry.getValue();
+                    if (flawName == null || flawName.isEmpty() || flawValue == null || flawValue < 1 || flawValue > 7) {
+                        throw new IllegalArgumentException("Invalid flaw name or value");
+                    }
+
+                    // Check if the total flaw points exceed 10
+                    int totalFlawPoints = character.getFlaws().stream().mapToInt(Flaw::getValue).sum();
+                    if (totalFlawPoints + flawValue > 10) {
+                        throw new IllegalArgumentException("Total flaw points exceed limit");
+                    }
+
+                    // Create and add the flaw
+                    Flaw flaw = new Flaw();
+                    flaw.setName(flawName);
+                    flaw.setValue(flawValue);
+                    flaw.setCharacter(character);
+                    character.getFlaws().add(flaw);
+
+                    // Award bonus points for adding a flaw
+                    character.setBonusPoints(character.getBonusPoints() + flawValue);
+
+                    break;
+
+
                 // Add more cases for other aspects if needed
                 default:
                     throw new IllegalArgumentException("Invalid aspect: " + aspect);
@@ -323,5 +415,104 @@ public class CharacterServiceImpl implements CharacterService {
         return characterRepository.save(character);
     }
 
+    @Override
+    public void spendNovaPoints(Character character, Map<String, Integer> novaSpendingMap) {
+        // Iterate through the nova spending map
+        for (Map.Entry<String, Integer> entry : novaSpendingMap.entrySet()) {
+            String novaItemType = entry.getKey();
+            int novaPointsSpent = entry.getValue();
 
+            switch (novaItemType) {
+                case "mega_attribute":
+                    spendNovaPointOnMegaAttribute(character, novaPointsSpent);
+                    break;
+                case "enhancement":
+                    spendNovaPointsOnEnhancement(character, novaPointsSpent);
+                    break;
+                case "normal_attribute":
+                    spendNovaPointsOnNormalAttributes(character, novaPointsSpent);
+                    break;
+                case "ability":
+                    spendNovaPointsOnAbilities(character, novaPointsSpent);
+                    break;
+                // Handle other nova spending types if needed
+                default:
+                    throw new IllegalArgumentException("Invalid nova spending type: " + novaItemType);
+            }
+        }
+    }
+
+    private void spendNovaPointOnMegaAttribute(Character character, int novaPointsSpent, String megaAttributeName) {
+
+        int currentMegaAttributeValue = character.getMegaAttributeValue(megaAttributeName);
+        String attributeName = megaAttributeName.substring(4);
+        if (character.getNovaPoints() < 3) {
+            throw new IllegalArgumentException("Insufficient Nova points");
+        }
+        if (character.getMegaAttributeValue(megaAttributeName) >= character.getAttributeValue(attributeName)) {
+            throw new IllegalArgumentException("Mega attribute value cannot exceed attribute value");
+        }
+
+        // Calculate the number of dots to increase for the mega-attribute
+//        int dotsToIncrease = novaPointsSpent / 3; // 3 nova points for one dot increase
+
+        // Update the value of the mega-attribute
+//        int currentMegaAttributeValue = character.getMegaAttributeValue(megaAttributeName);
+//        int newMegaAttributeValue = currentMegaAttributeValue + dotsToIncrease;
+
+        // Assuming you have a method to update the value of the mega-attribute
+//        updateMegaAttributeValue(character, megaAttributeName, newMegaAttributeValue);
+
+
+        // Deduct nova points spent
+        character.setNovaPoints(character.getNovaPoints() - 3);
+    }
+
+    private void spendNovaPointsOnEnhancement(Character character, int novaPointsSpent) {
+        // Calculate the number of enhancements to purchase
+        int enhancementsToPurchase = novaPointsSpent / 3; // 3 nova points per enhancement
+
+        // Check if the character has at least one dot in the associated mega-attribute
+        // (Assuming enhancements are associated with mega-attributes)
+        // Example: if (character.getMegaAttributeDexterity() >= 1) {
+
+        // Purchase enhancements
+        for (int i = 0; i < enhancementsToPurchase; i++) {
+            // Create and add the enhancement to the character
+            Enhancement enhancement = new Enhancement();
+            // Set enhancement properties as needed
+            // Example: enhancement.setMegaAttribute(character.getMegaAttributeDexterity());
+            // Add enhancement to character's list of enhancements
+            character.getEnhancements().add(enhancement);
+        }
+
+        // Deduct nova points spent
+        character.setNovaPoints(character.getNovaPoints() - novaPointsSpent);
+    }
+
+    private void spendNovaPointsOnNormalAttributes(Character character, int novaPointsSpent) {
+        // Calculate the number of dots to increase for normal attributes
+        int dotsToIncrease = novaPointsSpent * 3; // 1 nova point for 3 dots increase
+
+        // Distribute dots across attributes (Example: increase three attributes by one dot each)
+        // Adjust this logic based on your game's requirements
+        // Example: character.setStrength(character.getStrength() + 1);
+        //          character.setDexterity(character.getDexterity() + 1);
+        //          character.setIntelligence(character.getIntelligence() + 1);
+
+        // Deduct nova points spent
+        character.setNovaPoints(character.getNovaPoints() - novaPointsSpent);
+    }
+
+    private void spendNovaPointsOnAbilities(Character character, int novaPointsSpent) {
+        // Calculate the number of dots to increase for abilities
+        int dotsToIncrease = novaPointsSpent * 6; // 1 nova point for 6 dots increase
+
+        // Distribute dots across abilities (Example: increase all abilities by six dots each)
+        // Adjust this logic based on your game's requirements
+        // Example: character.getAbilities().forEach(ability -> ability.setValue(ability.getValue() + 6));
+
+        // Deduct nova points spent
+        character.setNovaPoints(character.getNovaPoints() - novaPointsSpent);
+    }
 }

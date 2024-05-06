@@ -1,22 +1,20 @@
-package org.devine.aberrant.character;
+package org.devine.aberrant.megaAttribute;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
-public class Flaw {
+public class Enhancement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    private String description;
-    private int value;
 
     @ManyToOne
-    @JoinColumn(name = "character_id")
-    private Character character;
+    @JoinColumn(name = "mega_attribute_id")
+    private MegaAttribute megaAttribute;
 
 }
