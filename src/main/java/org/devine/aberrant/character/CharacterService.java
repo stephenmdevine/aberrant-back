@@ -20,6 +20,8 @@ public interface CharacterService {
                               int novaPoints,
                               int experiencePoints);
 
+    Character findById(Long characterId);
+
     Character allocateAttributePoints(Character character, AttributeSet attributeSet, Map<String, Integer> attributeValues, Map<String, String> qualityDetails) throws IllegalArgumentException;
 
     Character allocateAbilityPoints(Character character, Map<String, Integer> abilityValues) throws IllegalArgumentException;
@@ -31,5 +33,7 @@ public interface CharacterService {
     Character spendBonusPoints(Character character, Map<String, Integer> bonusPointSpending) throws IllegalArgumentException;
 
     void spendNovaPoints(Character character, Map<String, Integer> novaPointSpending) throws IllegalArgumentException;
+
+    void spendNovaPointsOnMegaAttribute(Character character, int novaPointsSpent, String megaAttributeName);
 
 }

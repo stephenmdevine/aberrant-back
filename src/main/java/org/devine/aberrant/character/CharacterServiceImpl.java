@@ -1,5 +1,6 @@
 package org.devine.aberrant.character;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.devine.aberrant.ability.Ability;
 import org.devine.aberrant.ability.Specialty;
 import org.devine.aberrant.attribute.Attribute;
@@ -10,6 +11,7 @@ import org.devine.aberrant.megaAttribute.Enhancement;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class CharacterServiceImpl implements CharacterService {
@@ -49,6 +51,15 @@ public class CharacterServiceImpl implements CharacterService {
         character.setNovaPoints(novaPoints);
         character.setExperiencePoints(experiencePoints);
         return characterRepository.save(character);
+    }
+
+    @Override
+    public Character findById(Long characterId) {
+        // Retrieve the character from the database by ID
+        Optional<Character> characterOptional = characterRepository.findById(characterId);
+
+        // If the character is found, return it; otherwise, throw an exception
+        return characterOptional.orElseThrow(() -> new EntityNotFoundException("Character not found with id: " + characterId));
     }
 
     @Override
@@ -423,9 +434,9 @@ public class CharacterServiceImpl implements CharacterService {
             int novaPointsSpent = entry.getValue();
 
             switch (novaItemType) {
-                case "mega_attribute":
-                    spendNovaPointOnMegaAttribute(character, novaPointsSpent);
-                    break;
+//                case "mega_attribute":
+//                    spendNovaPointOnMegaAttribute(character, novaPointsSpent);
+//                    break;
                 case "enhancement":
                     spendNovaPointsOnEnhancement(character, novaPointsSpent);
                     break;
@@ -442,7 +453,7 @@ public class CharacterServiceImpl implements CharacterService {
         }
     }
 
-    private void spendNovaPointOnMegaAttribute(Character character, int novaPointsSpent, String megaAttributeName) {
+    public void spendNovaPointsOnMegaAttribute(Character character, int novaPointsSpent, String megaAttributeName) {
 
         int currentMegaAttributeValue = character.getMegaAttributeValue(megaAttributeName);
         String attributeName = megaAttributeName.substring(4);

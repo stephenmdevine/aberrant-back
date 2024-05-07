@@ -21,7 +21,7 @@ public class CharacterController {
     }
 
 //    Endpoint to spend Nova points
-    @PostMapping("{characterId}/spendNovaPoints")
+    @PostMapping("{characterId}/spendNovaPointsOnMegaAttribute")
     public ResponseEntity<String> spendNovaPoints(@PathVariable Long characterId, @RequestBody Map<String, Object> novaSpendingRequest) {
         try {
 //            Extract necessary parameters from the request
@@ -32,7 +32,7 @@ public class CharacterController {
             Character character = characterService.findById(characterId);
 
 //            Spend Nova points
-            characterService.spendNovaPoints(character, novaPointsSpent, megaAttributeName);
+            characterService.spendNovaPointsOnMegaAttribute(character, novaPointsSpent, megaAttributeName);
 //            Call other service methods for additional actions
 
 //             Return a success response
@@ -41,6 +41,5 @@ public class CharacterController {
             // Return an error response if an exception occurs
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to spend Nova points: " + e.getMessage());
         }
-        return null;
     }
 }
