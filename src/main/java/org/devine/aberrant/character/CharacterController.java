@@ -27,12 +27,13 @@ public class CharacterController {
 //            Extract necessary parameters from the request
             int novaPointsSpent = (int) novaSpendingRequest.get("novaPointsSpent");
             String megaAttributeName = (String) novaSpendingRequest.get("megaAttributeName");
+            String enhancementName = (String) novaSpendingRequest.get("enhancementName");
 //            Extract other parameters as needed
 
             Character character = characterService.findById(characterId);
 
 //            Spend Nova points
-            characterService.spendNovaPointsOnMegaAttribute(character, novaPointsSpent, megaAttributeName);
+            characterService.spendNovaPointsOnMegaAttribute(character, megaAttributeName, enhancementName);
 //            Call other service methods for additional actions
 
 //             Return a success response

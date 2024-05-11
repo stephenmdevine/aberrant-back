@@ -34,6 +34,6 @@ public interface CharacterService {
 
     void spendNovaPoints(Character character, Map<String, Integer> novaPointSpending) throws IllegalArgumentException;
 
-    void spendNovaPointsOnMegaAttribute(Character character, int novaPointsSpent, String megaAttributeName);
+    void spendNovaPointsOnMegaAttribute(Character character, String megaAttributeName, String enhancementName);
 
 }

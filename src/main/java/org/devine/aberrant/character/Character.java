@@ -8,6 +8,7 @@ import org.devine.aberrant.ability.Ability;
 import org.devine.aberrant.attribute.Attribute;
 import org.devine.aberrant.attribute.AttributeSet;
 import org.devine.aberrant.background.Background;
+import org.devine.aberrant.megaAttribute.Enhancement;
 import org.devine.aberrant.megaAttribute.MegaAttribute;
 import org.devine.aberrant.power.Power;
 
@@ -108,6 +109,9 @@ public class Character {
 
     @OneToMany(mappedBy = "character")
     private List<Merit> merits;
+
+    @OneToMany(mappedBy = "character")
+    private List<Enhancement> enhancements;
 
     public Character() {
 //        Calculate initial initiative based on Dex and Wits

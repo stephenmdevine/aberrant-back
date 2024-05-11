@@ -437,9 +437,9 @@ public class CharacterServiceImpl implements CharacterService {
 //                case "mega_attribute":
 //                    spendNovaPointOnMegaAttribute(character, novaPointsSpent);
 //                    break;
-                case "enhancement":
-                    spendNovaPointsOnEnhancement(character, novaPointsSpent);
-                    break;
+//                case "enhancement":
+//                    spendNovaPointsOnEnhancement(character, novaPointsSpent);
+//                    break;
                 case "normal_attribute":
                     spendNovaPointsOnNormalAttributes(character, novaPointsSpent);
                     break;
@@ -453,15 +453,29 @@ public class CharacterServiceImpl implements CharacterService {
         }
     }
 
-    public void spendNovaPointsOnMegaAttribute(Character character, int novaPointsSpent, String megaAttributeName) {
+    public void spendNovaPointsOnMegaAttribute(Character character, String megaAttributeName, String enhancementName) {
 
         int currentMegaAttributeValue = character.getMegaAttributeValue(megaAttributeName);
         String attributeName = megaAttributeName.substring(4);
+
+        // Check to see if character has sufficient Nova funds
         if (character.getNovaPoints() < 3) {
             throw new IllegalArgumentException("Insufficient Nova points");
         }
+        // Character cannot have a higher Mega-attribute value than they have an Attribute value
         if (character.getMegaAttributeValue(megaAttributeName) >= character.getAttributeValue(attributeName)) {
             throw new IllegalArgumentException("Mega attribute value cannot exceed attribute value");
+        }
+        // Character cannot have a higher Mega-attribute value than they have a Quantum value minus one
+        if (character.getMegaAttributeValue(megaAttributeName) >= (character.getQuantum() - 1)) {
+            throw new IllegalArgumentException("Mega attribute value must be less than Quantum value");
+        }
+        // Gain a new Enhancement if this is the first dot in a Mega-attribute
+        if (character.getMegaAttributeValue(megaAttributeName) == 0) {
+            Enhancement enhancement = new Enhancement();
+            enhancement.setName(enhancementName);
+            enhancement.setMegaAttribute(character.getMegaAttributes(megaAttributeName));
+            enhancement.setCharacter(character);
         }
 
         // Calculate the number of dots to increase for the mega-attribute
@@ -478,7 +492,7 @@ public class CharacterServiceImpl implements CharacterService {
         // Deduct nova points spent
         character.setNovaPoints(character.getNovaPoints() - 3);
     }
-
+/*
     private void spendNovaPointsOnEnhancement(Character character, int novaPointsSpent) {
         // Calculate the number of enhancements to purchase
         int enhancementsToPurchase = novaPointsSpent / 3; // 3 nova points per enhancement
@@ -500,6 +514,7 @@ public class CharacterServiceImpl implements CharacterService {
         // Deduct nova points spent
         character.setNovaPoints(character.getNovaPoints() - novaPointsSpent);
     }
+*/
 
     private void spendNovaPointsOnNormalAttributes(Character character, int novaPointsSpent) {
         // Calculate the number of dots to increase for normal attributes
