@@ -428,6 +428,41 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
+    public void increaseAttribute(Character character, String attributeName, Boolean isNewChar, Boolean isNova) {
+        // Find the attribute by name
+        Attribute attribute = character.getAttributes().stream()
+                .filter(attr -> attr.getName().equalsIgnoreCase(attributeName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Attribute not found: " + attributeName));
+        // Get current attribute value
+        int currentAttributeValue = character.getAttributeValue(attributeName);
+
+        // Is this character creation or increase through exp
+        int pointsToSpend;
+        if (isNewChar) {
+            if (isNova) {
+                pointsToSpend = character.getNovaPoints();
+            }   else {
+                pointsToSpend = character.getBonusPoints();
+            }
+        }   else {
+            pointsToSpend = character.getExperiencePoints();
+        }
+
+        int cost;
+        if (isNewChar) {
+            if (isNova) {
+                cost = 1000; // TODO need a way to get three attribute increases for a cost of 1
+            }   else {
+                cost = 5;
+            }
+        }   else {
+            cost = currentAttributeValue * 4;
+        }
+
+    }
+
+    @Override
     public void spendNovaPoints(Character character, Map<String, Integer> novaSpendingMap) {
         // Iterate through the nova spending map
         for (Map.Entry<String, Integer> entry : novaSpendingMap.entrySet()) {
@@ -454,7 +489,7 @@ public class CharacterServiceImpl implements CharacterService {
         }
     }
 
-    public void spendNovaPointsOnMegaAttribute(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar) {
+    public void increaseMegaAttribute(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar) {
         // Find the ability by name or initialize new mega-attribute
         MegaAttribute megaAttribute = character.getMegaAttributes().stream()
                 .filter(attr -> attr.getName().equalsIgnoreCase(megaAttributeName))
@@ -474,7 +509,7 @@ public class CharacterServiceImpl implements CharacterService {
         int pointsToSpend = isNewChar ? character.getNovaPoints() : character.getExperiencePoints();
         int cost = isNewChar ? 3 : (currentMegaAttributeValue == 0 ? 6 : (currentMegaAttributeValue * 5));
 
-        // Check to see if character has sufficient Nova funds
+        // Check to see if character has sufficient funds
         if (pointsToSpend < cost) {
             throw new IllegalArgumentException("Insufficient points to spend");
         }

@@ -21,7 +21,7 @@ public class CharacterController {
     }
 
 //    Endpoint to spend Nova points
-    @PostMapping("{characterId}/spendNovaPointsOnMegaAttribute")
+    @PostMapping("{characterId}/increaseMegaAttribute")
     public ResponseEntity<String> spendNovaPoints(@PathVariable Long characterId, @RequestBody Map<String, Object> novaSpendingRequest) {
         try {
 //            Extract necessary parameters from the request
@@ -34,7 +34,7 @@ public class CharacterController {
             Character character = characterService.findById(characterId);
 
 //            Spend Nova points
-            characterService.spendNovaPointsOnMegaAttribute(character, megaAttributeName, enhancementName, isNewChar);
+            characterService.increaseMegaAttribute(character, megaAttributeName, enhancementName, isNewChar);
 //            Call other service methods for additional actions
 
 //             Return a success response
