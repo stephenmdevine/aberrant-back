@@ -8,6 +8,7 @@ import org.devine.aberrant.attribute.AttributeSet;
 import org.devine.aberrant.attribute.Quality;
 import org.devine.aberrant.background.Background;
 import org.devine.aberrant.megaAttribute.Enhancement;
+import org.devine.aberrant.megaAttribute.MegaAttribute;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -455,14 +456,26 @@ public class CharacterServiceImpl implements CharacterService {
 
     public void spendNovaPointsOnMegaAttribute(Character character, String megaAttributeName, String enhancementName) {
 
+        // Find the ability by name or initialize new mega-attribute
+        MegaAttribute megaAttribute = character.getMegaAttributes().stream()
+                .filter(attr -> attr.getName().equalsIgnoreCase(megaAttributeName))
+                .findFirst().orElseGet(() -> {
+                    MegaAttribute newMegaAttribute = new MegaAttribute();
+                    newMegaAttribute.setCharacter(character);
+                    newMegaAttribute.setName(megaAttributeName);
+                    newMegaAttribute.setValue(0);
+                    return newMegaAttribute;
+                });
+        // Get current mega-attribute value
         int currentMegaAttributeValue = character.getMegaAttributeValue(megaAttributeName);
+        // Get baseline attribute corresponding to mega-attribute
         String attributeName = megaAttributeName.substring(4);
 
         // Check to see if character has sufficient Nova funds
         if (character.getNovaPoints() < 3) {
             throw new IllegalArgumentException("Insufficient Nova points");
         }
-        // Character cannot have a higher Mega-attribute value than they have an Attribute value
+        // Character cannot have a higher Mega-attribute value than they have a baseline Attribute value
         if (character.getMegaAttributeValue(megaAttributeName) >= character.getAttributeValue(attributeName)) {
             throw new IllegalArgumentException("Mega attribute value cannot exceed attribute value");
         }
@@ -474,21 +487,11 @@ public class CharacterServiceImpl implements CharacterService {
         if (character.getMegaAttributeValue(megaAttributeName) == 0) {
             Enhancement enhancement = new Enhancement();
             enhancement.setName(enhancementName);
-            enhancement.setMegaAttribute(character.getMegaAttributes(megaAttributeName));
+            enhancement.setMegaAttribute(megaAttribute);
             enhancement.setCharacter(character);
         }
-
-        // Calculate the number of dots to increase for the mega-attribute
-//        int dotsToIncrease = novaPointsSpent / 3; // 3 nova points for one dot increase
-
-        // Update the value of the mega-attribute
-//        int currentMegaAttributeValue = character.getMegaAttributeValue(megaAttributeName);
-//        int newMegaAttributeValue = currentMegaAttributeValue + dotsToIncrease;
-
-        // Assuming you have a method to update the value of the mega-attribute
-//        updateMegaAttributeValue(character, megaAttributeName, newMegaAttributeValue);
-
-
+        // Increase mega-attribute value by one
+        megaAttribute.setValue(currentMegaAttributeValue + 1);
         // Deduct nova points spent
         character.setNovaPoints(character.getNovaPoints() - 3);
     }
