@@ -454,8 +454,7 @@ public class CharacterServiceImpl implements CharacterService {
         }
     }
 
-    public void spendNovaPointsOnMegaAttribute(Character character, String megaAttributeName, String enhancementName) {
-
+    public void spendNovaPointsOnMegaAttribute(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar) {
         // Find the ability by name or initialize new mega-attribute
         MegaAttribute megaAttribute = character.getMegaAttributes().stream()
                 .filter(attr -> attr.getName().equalsIgnoreCase(megaAttributeName))
@@ -471,9 +470,13 @@ public class CharacterServiceImpl implements CharacterService {
         // Get baseline attribute corresponding to mega-attribute
         String attributeName = megaAttributeName.substring(4);
 
+        // Is this character creation or increase through exp
+        int pointsToSpend = isNewChar ? character.getNovaPoints() : character.getExperiencePoints();
+        int cost = isNewChar ? 3 : (currentMegaAttributeValue == 0 ? 6 : (currentMegaAttributeValue * 5));
+
         // Check to see if character has sufficient Nova funds
-        if (character.getNovaPoints() < 3) {
-            throw new IllegalArgumentException("Insufficient Nova points");
+        if (pointsToSpend < cost) {
+            throw new IllegalArgumentException("Insufficient points to spend");
         }
         // Character cannot have a higher Mega-attribute value than they have a baseline Attribute value
         if (character.getMegaAttributeValue(megaAttributeName) >= character.getAttributeValue(attributeName)) {
@@ -490,15 +493,17 @@ public class CharacterServiceImpl implements CharacterService {
             enhancement.setMegaAttribute(megaAttribute);
             enhancement.setCharacter(character);
         }
-        // Increase mega-attribute value by one
+        // Increase mega-attribute value
         megaAttribute.setValue(currentMegaAttributeValue + 1);
-        // Deduct nova points spent
-        character.setNovaPoints(character.getNovaPoints() - 3);
+        // Deduct points spent
+        if (isNewChar) {
+            character.setNovaPoints(character.getNovaPoints() - cost);
+        } else {
+            character.setExperiencePoints(character.getExperiencePoints() - cost);
+        }
     }
 /*
-    private void spendNovaPointsOnEnhancement(Character character, int novaPointsSpent) {
-        // Calculate the number of enhancements to purchase
-        int enhancementsToPurchase = novaPointsSpent / 3; // 3 nova points per enhancement
+    private void spendNovaPointsOnEnhancement(Character character, String megaAttributeName, String enhancementName) {
 
         // Check if the character has at least one dot in the associated mega-attribute
         // (Assuming enhancements are associated with mega-attributes)
@@ -513,9 +518,8 @@ public class CharacterServiceImpl implements CharacterService {
             // Add enhancement to character's list of enhancements
             character.getEnhancements().add(enhancement);
         }
-
         // Deduct nova points spent
-        character.setNovaPoints(character.getNovaPoints() - novaPointsSpent);
+        character.setNovaPoints(character.getNovaPoints() - 3);
     }
 */
 
