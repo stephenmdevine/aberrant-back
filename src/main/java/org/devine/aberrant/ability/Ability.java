@@ -26,6 +26,9 @@ public class Ability {
     @Column(name = "value")
     private int value;
 
+    @Column(name = "nova_purchased")
+    private int novaPurchased;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn
     @NotNull

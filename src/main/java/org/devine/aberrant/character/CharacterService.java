@@ -30,11 +30,15 @@ public interface CharacterService {
 
     Character allocateBackgroundPoints(Character character, Map<String, Integer> backgroundValues) throws IllegalArgumentException;
 
-    Character spendBonusPoints(Character character, Map<String, Integer> bonusPointSpending) throws IllegalArgumentException;
+//    Character spendBonusPoints(Character character, Map<String, Integer> bonusPointSpending) throws IllegalArgumentException;
 
     void increaseAttribute(Character character, String attributeName, Boolean isNewChar, Boolean isNova);
 
-    void spendNovaPoints(Character character, Map<String, Integer> novaPointSpending) throws IllegalArgumentException;
+    void increaseAbility(Character character, String abilityName, Boolean isNewChar, Boolean isNova);
+
+    void increaseBackground(Character character, String backgroundName, Boolean isNewChar, Boolean isNova);
+
+//    void spendNovaPoints(Character character, Map<String, Integer> novaPointSpending) throws IllegalArgumentException;
 
     void increaseMegaAttribute(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar);
 

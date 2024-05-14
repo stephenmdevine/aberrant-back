@@ -141,6 +141,52 @@ public class Character {
         return total;
     }
 
+//     Method to retrieve the value of a specific ability by name
+    public int getAbilityValue(String abilityName) {
+        // Iterate through the list of abilities
+        for (Ability ability : abilities) {
+            if (ability.getName().equalsIgnoreCase(abilityName)) {
+                return ability.getValue();
+            }
+        }
+        // Return a default value or handle the case when the ability is not found
+        return 0; // Default value if ability not found
+    }
+
+//     Method to retrieve the number of times any ability was purchased with Nova points
+    public int getNoOfAbilsBoughtWithNovaPts() {
+        int total = 0;
+        // Iterate through the list of attributes
+        for (Ability ability : abilities) {
+            total += ability.getNovaPurchased();
+        }
+        // Return the total amount of attributes purchased with Nova points
+        return total;
+    }
+
+//         Method to retrieve the value of a specific background by name
+    public int getBackgroundValue(String backgroundName) {
+        // Iterate through the list of backgrounds
+        for (Background background : backgrounds) {
+            if (background.getName().equalsIgnoreCase(backgroundName)) {
+                return background.getValue();
+            }
+        }
+        // Return a default value or handle the case when the background is not found
+        return 0; // Default value if background not found
+    }
+
+//     Method to retrieve the number of times any background was purchased with Nova points
+    public int getNoOfBkgrsBoughtWithNovaPts() {
+        int total = 0;
+        // Iterate through the list of backgrounds
+        for (Background background : backgrounds) {
+            total += background.getNovaPurchased();
+        }
+        // Return the total amount of backgrounds purchased with Nova points
+        return total;
+    }
+
 //     Method to retrieve the value of a specific mega attribute by name
     public int getMegaAttributeValue(String megaAttributeName) {
         // Iterate through the list of attributes

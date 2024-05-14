@@ -203,7 +203,7 @@ public class CharacterServiceImpl implements CharacterService {
         // Save the changes to the character and return
         return characterRepository.save(character);
     }
-
+/*
     @Override
     public Character spendBonusPoints(Character character, Map<String, Integer> bonusPointSpending) throws IllegalArgumentException {
         // Validate total bonus points spent
@@ -426,7 +426,7 @@ public class CharacterServiceImpl implements CharacterService {
         // Save the changes to the character and return
         return characterRepository.save(character);
     }
-
+*/
     @Override
     public void increaseAttribute(Character character, String attributeName, Boolean isNewChar, Boolean isNova) {
         // Find the attribute by name
@@ -486,6 +486,132 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
+    public void increaseAbility(Character character, String abilityName, Boolean isNewChar, Boolean isNova) {
+        // Find the ability by name
+        Ability ability = character.getAbilities().stream()
+                .filter(abil -> abil.getName().equalsIgnoreCase(abilityName))
+                .findFirst().orElseGet(() -> {
+                    Ability newAbility = new Ability();
+                    newAbility.setCharacter(character);
+                    newAbility.setName(abilityName);
+                    newAbility.setValue(0);
+                    return newAbility;
+                });
+        // Get current ability value
+        int currentAbilityValue = character.getAbilityValue(abilityName);
+
+        // Is this character creation or increase through exp
+        int pointsToSpend;
+        if (isNewChar) {
+            if (isNova) {
+                pointsToSpend = character.getNovaPoints();
+            }   else {
+                pointsToSpend = character.getBonusPoints();
+            }
+        }   else {
+            pointsToSpend = character.getExperiencePoints();
+        }
+        int cost;
+        if (isNewChar) {
+            if (isNova) {
+                if (character.getNoOfAbilsBoughtWithNovaPts() % 6 == 0) {
+                    cost = 1;
+                }   else {
+                    cost = 0;
+                }
+            }   else {
+                cost = 2;
+            }
+        }   else {
+            cost = (currentAbilityValue == 0) ? 3 : (currentAbilityValue * 2);
+        }
+        // Check to see if character has sufficient funds
+        if (pointsToSpend < cost) {
+            throw new IllegalArgumentException("Insufficient points to spend");
+        }
+        // Character cannot have an ability value greater than 5
+        if (character.getAbilityValue(abilityName) >= 5) {
+            throw new IllegalArgumentException("Ability value must be less than or equal to 5");
+        }
+        // Increase ability value
+        ability.setValue(currentAbilityValue + 1);
+        // Deduct points spent
+        if (isNewChar) {
+            if (isNova) {
+                ability.setNovaPurchased(ability.getNovaPurchased() + 1);
+                character.setNovaPoints(character.getNovaPoints() - cost);
+            }   else {
+                character.setBonusPoints(character.getBonusPoints() - cost);
+            }
+        }   else {
+            character.setExperiencePoints(character.getExperiencePoints() - cost);
+        }
+    }
+
+    @Override
+    public void increaseBackground(Character character, String backgroundName, Boolean isNewChar, Boolean isNova) {
+        // Find the background by name
+        Background background = character.getBackgrounds().stream()
+                .filter(bkgr -> bkgr.getName().equalsIgnoreCase(backgroundName))
+                .findFirst().orElseGet(() -> {
+                    Background newBackground = new Background();
+                    newBackground.setCharacter(character);
+                    newBackground.setName(backgroundName);
+                    newBackground.setValue(0);
+                    return newBackground;
+                });
+        // Get current background value
+        int currentBackgroundValue = character.getBackgroundValue(backgroundName);
+
+        // Is this character creation or increase through exp
+        int pointsToSpend;
+        if (isNewChar) {
+            if (isNova) {
+                pointsToSpend = character.getNovaPoints();
+            }   else {
+                pointsToSpend = character.getBonusPoints();
+            }
+        }   else {
+            pointsToSpend = character.getExperiencePoints();
+        }
+        int cost;
+        if (isNewChar) {
+            if (isNova) {
+                if (character.getNoOfBkgrsBoughtWithNovaPts() % 5 == 0) {
+                    cost = 1;
+                }   else {
+                    cost = 0;
+                }
+            }   else {
+                cost = 1;
+            }
+        }   else {
+            cost = (currentBackgroundValue == 0) ? 2 : (currentBackgroundValue * 2);
+        }
+        // Check to see if character has sufficient funds
+        if (pointsToSpend < cost) {
+            throw new IllegalArgumentException("Insufficient points to spend");
+        }
+        // Character cannot have a background value greater than 5
+        if (character.getBackgroundValue(backgroundName) >= 5) {
+            throw new IllegalArgumentException("Background value must be less than or equal to 5");
+        }
+        // Increase background value
+        background.setValue(currentBackgroundValue + 1);
+        // Deduct points spent
+        if (isNewChar) {
+            if (isNova) {
+                background.setNovaPurchased(background.getNovaPurchased() + 1);
+                character.setNovaPoints(character.getNovaPoints() - cost);
+            }   else {
+                character.setBonusPoints(character.getBonusPoints() - cost);
+            }
+        }   else {
+            character.setExperiencePoints(character.getExperiencePoints() - cost);
+        }
+    }
+/*
+    @Override
     public void spendNovaPoints(Character character, Map<String, Integer> novaSpendingMap) {
         // Iterate through the nova spending map
         for (Map.Entry<String, Integer> entry : novaSpendingMap.entrySet()) {
@@ -511,9 +637,10 @@ public class CharacterServiceImpl implements CharacterService {
             }
         }
     }
-
+*/
+    @Override
     public void increaseMegaAttribute(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar) {
-        // Find the ability by name or initialize new mega-attribute
+        // Find the attribute by name or initialize new mega-attribute
         MegaAttribute megaAttribute = character.getMegaAttributes().stream()
                 .filter(attr -> attr.getName().equalsIgnoreCase(megaAttributeName))
                 .findFirst().orElseGet(() -> {
@@ -581,29 +708,4 @@ public class CharacterServiceImpl implements CharacterService {
     }
 */
 
-    private void spendNovaPointsOnNormalAttributes(Character character, int novaPointsSpent) {
-        // Calculate the number of dots to increase for normal attributes
-        int dotsToIncrease = novaPointsSpent * 3; // 1 nova point for 3 dots increase
-
-        // Distribute dots across attributes (Example: increase three attributes by one dot each)
-        // Adjust this logic based on your game's requirements
-        // Example: character.setStrength(character.getStrength() + 1);
-        //          character.setDexterity(character.getDexterity() + 1);
-        //          character.setIntelligence(character.getIntelligence() + 1);
-
-        // Deduct nova points spent
-        character.setNovaPoints(character.getNovaPoints() - novaPointsSpent);
-    }
-
-    private void spendNovaPointsOnAbilities(Character character, int novaPointsSpent) {
-        // Calculate the number of dots to increase for abilities
-        int dotsToIncrease = novaPointsSpent * 6; // 1 nova point for 6 dots increase
-
-        // Distribute dots across abilities (Example: increase all abilities by six dots each)
-        // Adjust this logic based on your game's requirements
-        // Example: character.getAbilities().forEach(ability -> ability.setValue(ability.getValue() + 6));
-
-        // Deduct nova points spent
-        character.setNovaPoints(character.getNovaPoints() - novaPointsSpent);
-    }
 }
