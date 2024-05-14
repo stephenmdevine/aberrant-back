@@ -450,15 +450,10 @@ public class CharacterServiceImpl implements CharacterService {
         }
         int cost;
         if (isNewChar) {
-            if (isNova) {
-                if (character.getNoOfAttrsBoughtWithNovaPts() % 3 == 0) {
-                    cost = 1;
-                }   else {
-                    cost = 0;
-                }
-            }   else {
-                cost = 5;
-            }
+            if (isNova) { // One Nova point grants 3 dots in attributes
+                if (character.getNoOfAttrsBoughtWithNovaPts() % 3 == 0) {cost = 1;}
+                    else {cost = 0;}
+            }   else {cost = 5;}
         }   else {
             cost = currentAttributeValue * 4;
         }
@@ -513,15 +508,10 @@ public class CharacterServiceImpl implements CharacterService {
         }
         int cost;
         if (isNewChar) {
-            if (isNova) {
-                if (character.getNoOfAbilsBoughtWithNovaPts() % 6 == 0) {
-                    cost = 1;
-                }   else {
-                    cost = 0;
-                }
-            }   else {
-                cost = 2;
-            }
+            if (isNova) { // One Nova point grants 6 dots in abilities
+                if (character.getNoOfAbilsBoughtWithNovaPts() % 6 == 0) {cost = 1;}
+                    else {cost = 0;}
+            }   else {cost = 2;}
         }   else {
             cost = (currentAbilityValue == 0) ? 3 : (currentAbilityValue * 2);
         }
@@ -576,15 +566,10 @@ public class CharacterServiceImpl implements CharacterService {
         }
         int cost;
         if (isNewChar) {
-            if (isNova) {
-                if (character.getNoOfBkgrsBoughtWithNovaPts() % 5 == 0) {
-                    cost = 1;
-                }   else {
-                    cost = 0;
-                }
-            }   else {
-                cost = 1;
-            }
+            if (isNova) { // One Nova point grants 5 dots in backgrounds
+                if (character.getNoOfBkgrsBoughtWithNovaPts() % 5 == 0) {cost = 1;}
+                    else {cost = 0;}
+            }   else {cost = 1;}
         }   else {
             cost = (currentBackgroundValue == 0) ? 2 : (currentBackgroundValue * 2);
         }
@@ -608,6 +593,44 @@ public class CharacterServiceImpl implements CharacterService {
             }
         }   else {
             character.setExperiencePoints(character.getExperiencePoints() - cost);
+        }
+    }
+
+    @Override
+    public void addAbilitySpecialty(Character character, String abilityName, String specialtyName, Boolean isNewChar) {
+        // Find the ability by name
+        Ability ability = character.getAbilities().stream()
+                .filter(abil -> abil.getName().equalsIgnoreCase(abilityName))
+                .findFirst().orElseGet(() -> {
+                    Ability newAbility = new Ability();
+                    newAbility.setCharacter(character);
+                    newAbility.setName(abilityName);
+                    newAbility.setValue(0);
+                    return newAbility;
+                });
+        // Check if the ability already has maximum specialties
+        if (ability.getSpecialties().size() >= 3) {
+            throw new IllegalArgumentException("Maximum specialties reached for ability: " + abilityName);
+        }
+        // Is this character creation or increase through exp
+        int pointsToSpend = isNewChar ? character.getBonusPoints() : character.getExperiencePoints();
+
+        // Check to see if character has sufficient funds
+        if (pointsToSpend < 1) {
+            throw new IllegalArgumentException("Insufficient points to spend");
+        }
+
+        // Create and add the specialty
+        Specialty specialty = new Specialty();
+        specialty.setName(specialtyName);
+        specialty.setAbility(ability);
+        ability.getSpecialties().add(specialty);
+
+        // Deduct points spent
+        if (isNewChar) {
+            character.setNovaPoints(character.getNovaPoints() - 1);
+        } else {
+            character.setExperiencePoints(character.getExperiencePoints() - 1);
         }
     }
 /*

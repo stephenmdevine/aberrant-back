@@ -38,6 +38,8 @@ public interface CharacterService {
 
     void increaseBackground(Character character, String backgroundName, Boolean isNewChar, Boolean isNova);
 
+    void addAbilitySpecialty(Character character, String abilityName, String specialtyName, Boolean isNewChar);
+
 //    void spendNovaPoints(Character character, Map<String, Integer> novaPointSpending) throws IllegalArgumentException;
 
     void increaseMegaAttribute(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar);
