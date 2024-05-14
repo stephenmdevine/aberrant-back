@@ -448,18 +448,41 @@ public class CharacterServiceImpl implements CharacterService {
         }   else {
             pointsToSpend = character.getExperiencePoints();
         }
-
         int cost;
         if (isNewChar) {
             if (isNova) {
-                cost = 1000; // TODO need a way to get three attribute increases for a cost of 1
+                if (character.getNoOfAttrsBoughtWithNovaPts() % 3 == 0) {
+                    cost = 1;
+                }   else {
+                    cost = 0;
+                }
             }   else {
                 cost = 5;
             }
         }   else {
             cost = currentAttributeValue * 4;
         }
-
+        // Check to see if character has sufficient funds
+        if (pointsToSpend < cost) {
+            throw new IllegalArgumentException("Insufficient points to spend");
+        }
+        // Character cannot have an attribute value greater than 5
+        if (character.getAttributeValue(attributeName) >= 5) {
+            throw new IllegalArgumentException("Attribute value must be less than or equal to 5");
+        }
+        // Increase attribute value
+        attribute.setValue(currentAttributeValue + 1);
+        // Deduct points spent
+        if (isNewChar) {
+            if (isNova) {
+                attribute.setNovaPurchased(attribute.getNovaPurchased() + 1);
+                character.setNovaPoints(character.getNovaPoints() - cost);
+            }   else {
+                character.setBonusPoints(character.getBonusPoints() - cost);
+            }
+        }   else {
+            character.setExperiencePoints(character.getExperiencePoints() - cost);
+        }
     }
 
     @Override

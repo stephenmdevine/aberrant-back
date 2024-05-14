@@ -25,6 +25,9 @@ public class Attribute {
     @Column(name = "value")
     private int value;
 
+    @Column(name = "nova_purchased")
+    private int novaPurchased;
+
     @ManyToOne
     @JoinColumn(name = "attribute_set_id")
     private AttributeSet attributeSet;

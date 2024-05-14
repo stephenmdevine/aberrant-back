@@ -130,6 +130,17 @@ public class Character {
         return 0; // Default value if attribute not found
     }
 
+//     Method to retrieve the number of times any attribute was purchased with Nova points
+    public int getNoOfAttrsBoughtWithNovaPts() {
+        int total = 0;
+        // Iterate through the list of attributes
+        for (Attribute attribute : attributes) {
+            total += attribute.getNovaPurchased();
+        }
+        // Return the total amount of attributes purchased with Nova points
+        return total;
+    }
+
 //     Method to retrieve the value of a specific mega attribute by name
     public int getMegaAttributeValue(String megaAttributeName) {
         // Iterate through the list of attributes
