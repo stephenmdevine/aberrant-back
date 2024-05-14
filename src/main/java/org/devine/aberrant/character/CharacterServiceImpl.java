@@ -203,230 +203,7 @@ public class CharacterServiceImpl implements CharacterService {
         // Save the changes to the character and return
         return characterRepository.save(character);
     }
-/*
-    @Override
-    public Character spendBonusPoints(Character character, Map<String, Integer> bonusPointSpending) throws IllegalArgumentException {
-        // Validate total bonus points spent
-        int totalPointsSpent = bonusPointSpending.values().stream().mapToInt(Integer::intValue).sum();
-        if (totalPointsSpent > character.getBonusPoints()) {
-            throw new IllegalArgumentException("Insufficient bonus points");
-        }
 
-        // Iterate over the bonus point spending map
-        for (Map.Entry<String, Integer> entry : bonusPointSpending.entrySet()) {
-            String aspect = entry.getKey();
-            int pointsSpent = entry.getValue();
-
-            switch (aspect) {
-                case "attribute":
-                    // Check if the attribute name is provided in the spending map
-                    String attributeName = entry.getKey();
-                    if (attributeName == null || attributeName.isEmpty()) {
-                        throw new IllegalArgumentException("Attribute name is required");
-                    }
-
-                    // Find the attribute by name
-                    Attribute attribute = character.getAttributes().stream()
-                            .filter(attr -> attr.getName().equalsIgnoreCase(attributeName))
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalArgumentException("Attribute not found: " + attributeName));
-
-                    // Calculate the number of dots to increase
-                    int attributeDotsToIncrease = pointsSpent / 5; // 5 bonus points for one dot increase
-
-                    // Increase the attribute value by the calculated dots
-                    int newAttributeValue = attribute.getValue() + attributeDotsToIncrease;
-                    attribute.setValue(newAttributeValue);
-
-                    // Update the remaining bonus points
-                    int remainingAttributePoints = pointsSpent % 5; // Remaining points after spending on dots
-                    character.setBonusPoints(character.getBonusPoints() - pointsSpent + remainingAttributePoints);
-
-                    break;
-
-                case "ability":
-                    // Check if the ability name is provided in the spending map
-                    String abilityName = entry.getKey();
-                    if (abilityName == null || abilityName.isEmpty()) {
-                        throw new IllegalArgumentException("Ability name is required");
-                    }
-
-                    // Find the ability by name
-                    Ability ability = character.getAbilities().stream()
-                            .filter(abil -> abil.getName().equalsIgnoreCase(abilityName))
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalArgumentException("Ability not found: " + abilityName));
-
-                    // Calculate the number of dots to increase
-                    int abilityDotsToIncrease = pointsSpent / 2; // 2 bonus points for one dot increase
-
-                    // Increase the ability value by the calculated dots
-                    int newAbilityValue = ability.getValue() + abilityDotsToIncrease;
-                    ability.setValue(newAbilityValue);
-
-                    // Update the remaining bonus points
-                    int remainingAbilityPoints = pointsSpent % 2; // Remaining points after spending on dots
-                    character.setBonusPoints(character.getBonusPoints() - pointsSpent + remainingAbilityPoints);
-
-                    break;
-
-                case "background":
-                    // Check if the background name is provided in the spending map
-                    String backgroundName = entry.getKey();
-                    if (backgroundName == null || backgroundName.isEmpty()) {
-                        throw new IllegalArgumentException("Background name is required");
-                    }
-
-                    // Find the background by name
-                    Background background = character.getBackgrounds().stream()
-                            .filter(bg -> bg.getName().equalsIgnoreCase(backgroundName))
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalArgumentException("Background not found: " + backgroundName));
-
-                    // Calculate the number of dots to increase
-                    int backgroundDotsToIncrease = pointsSpent; // 1 bonus point for one dot increase
-
-                    // Increase the background value by the calculated dots
-                    int newBackgroundValue = background.getValue() + backgroundDotsToIncrease;
-                    background.setValue(newBackgroundValue);
-
-                    // Update the remaining bonus points
-                    character.setBonusPoints(character.getBonusPoints() - pointsSpent);
-
-                    break;
-
-                case "ability_specialty":
-                    // Check if both ability name and specialty name are provided in the spending map
-                    String anotherAbilityName = entry.getKey();
-                    String specialtyName = String.valueOf(entry.getValue()); // Assuming the value contains the specialty name
-                    if (anotherAbilityName == null || anotherAbilityName.isEmpty() || specialtyName == null || specialtyName.isEmpty()) {
-                        throw new IllegalArgumentException("Ability name and specialty name are required");
-                    }
-
-                    // Find the ability by name
-                    Ability anotherAbility = character.getAbilities().stream()
-                            .filter(abil -> abil.getName().equalsIgnoreCase(anotherAbilityName))
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalArgumentException("Ability not found: " + anotherAbilityName));
-
-                    // Check if the ability already has maximum specialties
-                    if (anotherAbility.getSpecialties().size() >= 3) {
-                        throw new IllegalArgumentException("Maximum specialties reached for ability: " + anotherAbilityName);
-                    }
-
-                    // Create and add the specialty
-                    Specialty specialty = new Specialty();
-                    specialty.setName(specialtyName);
-                    specialty.setAbility(anotherAbility);
-                    anotherAbility.getSpecialties().add(specialty);
-
-                    // Update the remaining bonus points
-                    character.setBonusPoints(character.getBonusPoints() - 1);
-
-                    break;
-
-                case "willpower":
-                    // Calculate the number of dots to increase for Willpower
-                    int willpowerDotsToIncrease = pointsSpent / 2; // 2 bonus points for one dot increase
-
-                    // Increase the Willpower value by the calculated dots
-                    int newWillpowerValue = character.getWillpower() + willpowerDotsToIncrease;
-                    character.setWillpower(newWillpowerValue);
-
-                    // Update the remaining bonus points
-                    int remainingWillpowerPoints = pointsSpent % 2; // Remaining points after spending on dots
-                    character.setBonusPoints(character.getBonusPoints() - pointsSpent + remainingWillpowerPoints);
-
-                    break;
-
-                case "quantum":
-                    // Calculate the number of dots to increase for Quantum
-                    int quantumDotsToIncrease = pointsSpent / 7; // 7 bonus points for one dot increase
-
-                    // Increase the Quantum value by the calculated dots
-                    int newQuantumValue = character.getQuantum() + quantumDotsToIncrease;
-                    character.setQuantum(newQuantumValue);
-
-                    // Update the remaining bonus points
-                    int remainingQuantumPoints = pointsSpent % 7; // Remaining points after spending on dots
-                    character.setBonusPoints(character.getBonusPoints() - pointsSpent + remainingQuantumPoints);
-
-                    break;
-
-                case "initiative":
-                    // Calculate the number of dots to increase for Initiative
-                    int initiativeDotsToIncrease = pointsSpent; // 1 bonus point for one dot increase
-
-                    // Increase the Initiative value by the calculated dots
-                    int newInitiativeValue = character.getInitiative() + initiativeDotsToIncrease;
-                    character.setInitiative(newInitiativeValue);
-
-                    // Update the remaining bonus points
-                    character.setBonusPoints(character.getBonusPoints() - pointsSpent);
-
-                    break;
-
-                case "merit":
-                    // Check if the merit name and value are provided in the spending map
-                    String meritName = entry.getKey();
-                    Integer meritValue = entry.getValue();
-                    if (meritName == null || meritName.isEmpty() || meritValue == null || meritValue < 1 || meritValue > 7) {
-                        throw new IllegalArgumentException("Invalid merit name or value");
-                    }
-
-                    // Create and add the merit
-                    Merit merit = new Merit();
-                    merit.setName(meritName);
-                    merit.setValue(meritValue);
-                    merit.setCharacter(character);
-                    character.getMerits().add(merit);
-
-                    // Deduct bonus points for adding a merit
-                    character.setBonusPoints(character.getBonusPoints() - meritValue);
-
-                    break;
-
-                case "flaw":
-                    // Check if the flaw name and value are provided in the spending map
-                    String flawName = entry.getKey();
-                    Integer flawValue = entry.getValue();
-                    if (flawName == null || flawName.isEmpty() || flawValue == null || flawValue < 1 || flawValue > 7) {
-                        throw new IllegalArgumentException("Invalid flaw name or value");
-                    }
-
-                    // Check if the total flaw points exceed 10
-                    int totalFlawPoints = character.getFlaws().stream().mapToInt(Flaw::getValue).sum();
-                    if (totalFlawPoints + flawValue > 10) {
-                        throw new IllegalArgumentException("Total flaw points exceed limit");
-                    }
-
-                    // Create and add the flaw
-                    Flaw flaw = new Flaw();
-                    flaw.setName(flawName);
-                    flaw.setValue(flawValue);
-                    flaw.setCharacter(character);
-                    character.getFlaws().add(flaw);
-
-                    // Award bonus points for adding a flaw
-                    character.setBonusPoints(character.getBonusPoints() + flawValue);
-
-                    break;
-
-
-                // Add more cases for other aspects if needed
-                default:
-                    throw new IllegalArgumentException("Invalid aspect: " + aspect);
-            }
-        }
-
-        // Update the character's remaining bonus points
-        int remainingPoints = character.getBonusPoints() - totalPointsSpent;
-        character.setBonusPoints(remainingPoints);
-
-        // Save the changes to the character and return
-        return characterRepository.save(character);
-    }
-*/
     @Override
     public void increaseAttribute(Character character, String attributeName, Boolean isNewChar, Boolean isNova) {
         // Find the attribute by name
@@ -539,6 +316,44 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
+    public void addAbilitySpecialty(Character character, String abilityName, String specialtyName, Boolean isNewChar) {
+        // Find the ability by name
+        Ability ability = character.getAbilities().stream()
+                .filter(abil -> abil.getName().equalsIgnoreCase(abilityName))
+                .findFirst().orElseGet(() -> {
+                    Ability newAbility = new Ability();
+                    newAbility.setCharacter(character);
+                    newAbility.setName(abilityName);
+                    newAbility.setValue(0);
+                    return newAbility;
+                });
+        // Check if the ability already has maximum specialties
+        if (ability.getSpecialties().size() >= 3) {
+            throw new IllegalArgumentException("Maximum specialties reached for ability: " + abilityName);
+        }
+        // Is this character creation or increase through exp
+        int pointsToSpend = isNewChar ? character.getBonusPoints() : character.getExperiencePoints();
+
+        // Check to see if character has sufficient funds
+        if (pointsToSpend < 1) {
+            throw new IllegalArgumentException("Insufficient points to spend");
+        }
+
+        // Create and add the specialty
+        Specialty specialty = new Specialty();
+        specialty.setName(specialtyName);
+        specialty.setAbility(ability);
+        ability.getSpecialties().add(specialty);
+
+        // Deduct points spent
+        if (isNewChar) {
+            character.setNovaPoints(character.getNovaPoints() - 1);
+        } else {
+            character.setExperiencePoints(character.getExperiencePoints() - 1);
+        }
+    }
+
+    @Override
     public void increaseBackground(Character character, String backgroundName, Boolean isNewChar, Boolean isNova) {
         // Find the background by name
         Background background = character.getBackgrounds().stream()
@@ -597,72 +412,149 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void addAbilitySpecialty(Character character, String abilityName, String specialtyName, Boolean isNewChar) {
-        // Find the ability by name
-        Ability ability = character.getAbilities().stream()
-                .filter(abil -> abil.getName().equalsIgnoreCase(abilityName))
-                .findFirst().orElseGet(() -> {
-                    Ability newAbility = new Ability();
-                    newAbility.setCharacter(character);
-                    newAbility.setName(abilityName);
-                    newAbility.setValue(0);
-                    return newAbility;
-                });
-        // Check if the ability already has maximum specialties
-        if (ability.getSpecialties().size() >= 3) {
-            throw new IllegalArgumentException("Maximum specialties reached for ability: " + abilityName);
-        }
+    public void increaseWillpower(Character character, Boolean isNewChar, Boolean isNova) {
         // Is this character creation or increase through exp
-        int pointsToSpend = isNewChar ? character.getBonusPoints() : character.getExperiencePoints();
-
+        int pointsToSpend;
+        if (isNewChar) {
+            if (isNova) {
+                pointsToSpend = character.getNovaPoints();
+            }   else {
+                pointsToSpend = character.getBonusPoints();
+            }
+        }   else {
+            pointsToSpend = character.getExperiencePoints();
+        }
+        int cost;
+        if (isNewChar) {
+            if (isNova) {cost = 1;}
+                else {cost = 2;}
+        }   else {cost = character.getWillpower();}
         // Check to see if character has sufficient funds
-        if (pointsToSpend < 1) {
+        if (pointsToSpend < cost) {
             throw new IllegalArgumentException("Insufficient points to spend");
         }
 
-        // Create and add the specialty
-        Specialty specialty = new Specialty();
-        specialty.setName(specialtyName);
-        specialty.setAbility(ability);
-        ability.getSpecialties().add(specialty);
+        // Increase willpower value
+        character.setWillpower(character.getWillpower() + 1);
 
         // Deduct points spent
         if (isNewChar) {
-            character.setNovaPoints(character.getNovaPoints() - 1);
-        } else {
-            character.setExperiencePoints(character.getExperiencePoints() - 1);
-        }
-    }
-/*
-    @Override
-    public void spendNovaPoints(Character character, Map<String, Integer> novaSpendingMap) {
-        // Iterate through the nova spending map
-        for (Map.Entry<String, Integer> entry : novaSpendingMap.entrySet()) {
-            String novaItemType = entry.getKey();
-            int novaPointsSpent = entry.getValue();
-
-            switch (novaItemType) {
-//                case "mega_attribute":
-//                    spendNovaPointOnMegaAttribute(character, novaPointsSpent);
-//                    break;
-//                case "enhancement":
-//                    spendNovaPointsOnEnhancement(character, novaPointsSpent);
-//                    break;
-                case "normal_attribute":
-                    spendNovaPointsOnNormalAttributes(character, novaPointsSpent);
-                    break;
-                case "ability":
-                    spendNovaPointsOnAbilities(character, novaPointsSpent);
-                    break;
-                // Handle other nova spending types if needed
-                default:
-                    throw new IllegalArgumentException("Invalid nova spending type: " + novaItemType);
+            if (isNova) {
+                character.setNovaPoints(character.getNovaPoints() - cost);
+            }   else {
+                character.setBonusPoints(character.getBonusPoints() - cost);
             }
+        }   else {
+            character.setExperiencePoints(character.getExperiencePoints() - cost);
         }
     }
-*/
+
     @Override
-    public void increaseMegaAttribute(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar) {
+    public void increaseQuantum(Character character, Boolean isNewChar, Boolean isNova, Boolean isTainted) {
+        // Is this character creation or increase through exp
+        int pointsToSpend;
+        if (isNewChar) {
+            if (isNova) {
+                pointsToSpend = character.getNovaPoints();
+            }   else {
+                pointsToSpend = character.getBonusPoints();
+            }
+        }   else {
+            pointsToSpend = character.getExperiencePoints();
+        }
+        int cost;
+        if (isNewChar) {
+            if (isNova) cost = !isTainted ? 5 : 3;
+                else cost = 7;
+        }   else cost = character.getQuantum() * (!isTainted ? 8 : 4);
+        // Check to see if character has sufficient funds
+        if (pointsToSpend < cost) {
+            throw new IllegalArgumentException("Insufficient points to spend");
+        }
+
+        // Increase Quantum value and Quantum pool, if necessary
+        character.setQuantum(character.getQuantum() + 1);
+        if (isNewChar) character.setQuantumPool(character.getQuantumPool() + 2);
+
+        // Deduct points spent
+        if (isNewChar) {
+            if (isNova) {
+                character.setNovaPoints(character.getNovaPoints() - cost);
+            }   else {
+                character.setBonusPoints(character.getBonusPoints() - cost);
+            }
+        }   else {
+            character.setExperiencePoints(character.getExperiencePoints() - cost);
+        }
+
+    }
+
+    @Override
+    public void increaseInitiative(Character character, Boolean isNewChar) {
+        // Is this character creation or increase through exp
+        int pointsToSpend;
+        if (isNewChar) {
+            pointsToSpend = character.getBonusPoints();
+        }   else {
+            pointsToSpend = character.getExperiencePoints();
+        }
+        int cost;
+        if (isNewChar) {cost = 2;}
+            else {cost = character.getInitiative();}
+        // Check to see if character has sufficient funds
+        if (pointsToSpend < cost) {
+            throw new IllegalArgumentException("Insufficient points to spend");
+        }
+
+        // Increase initiative value
+        character.setInitiative(character.getInitiative() + 1);
+
+        // Deduct points spent
+        if (isNewChar) {
+            character.setBonusPoints(character.getBonusPoints() - cost);
+        }   else {
+            character.setExperiencePoints(character.getExperiencePoints() - cost);
+        }
+
+    }
+
+    @Override
+    public void addMerit(Character character, String meritName, int meritValue) {
+        // Check to see if character has sufficient funds
+        if (meritValue < character.getBonusPoints()) {
+            throw new IllegalArgumentException("Insufficient points to spend");
+        }
+        // Create and add the merit
+        Merit merit = new Merit();
+        merit.setName(meritName);
+        merit.setValue(meritValue);
+        merit.setCharacter(character);
+        character.getMerits().add(merit);
+
+        // Deduct bonus points for adding a merit
+        character.setBonusPoints(character.getBonusPoints() - meritValue);
+    }
+
+    @Override
+    public void addFlaw(Character character, String flawName, int flawValue) {
+        // Check if the total flaw points exceed 10
+        int totalFlawPoints = character.getFlaws().stream().mapToInt(Flaw::getValue).sum();
+        if (totalFlawPoints + flawValue > 10) {
+            throw new IllegalArgumentException("Total flaw points exceed limit");
+        }
+        // Create and add the flaw
+        Flaw flaw = new Flaw();
+        flaw.setName(flawName);
+        flaw.setValue(flawValue);
+        flaw.setCharacter(character);
+        character.getFlaws().add(flaw);
+
+        // Add bonus points for taking a flaw
+        character.setBonusPoints(character.getBonusPoints() + flawValue);
+    }
+
+    @Override
+    public void increaseMegaAttribute(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar, Boolean isTainted) {
         // Find the attribute by name or initialize new mega-attribute
         MegaAttribute megaAttribute = character.getMegaAttributes().stream()
                 .filter(attr -> attr.getName().equalsIgnoreCase(megaAttributeName))
@@ -680,7 +572,20 @@ public class CharacterServiceImpl implements CharacterService {
 
         // Is this character creation or increase through exp
         int pointsToSpend = isNewChar ? character.getNovaPoints() : character.getExperiencePoints();
-        int cost = isNewChar ? 3 : (currentMegaAttributeValue == 0 ? 6 : (currentMegaAttributeValue * 5));
+        int cost;
+        double costDouble;
+        if (isNewChar) {
+            if (isTainted) cost = 2;
+            else cost = 3;
+        } else {
+            if (currentMegaAttributeValue == 0) {
+                if (isTainted) cost = 3;
+                else cost = 6;
+            } else {
+                costDouble = (double) (currentMegaAttributeValue * 5) / (isTainted ? 2 : 1);
+                cost = (int) Math.round(costDouble);
+            }
+        }
 
         // Check to see if character has sufficient funds
         if (pointsToSpend < cost) {
@@ -710,25 +615,44 @@ public class CharacterServiceImpl implements CharacterService {
             character.setExperiencePoints(character.getExperiencePoints() - cost);
         }
     }
-/*
-    private void spendNovaPointsOnEnhancement(Character character, String megaAttributeName, String enhancementName) {
 
+    @Override
+    public void addEnhancement(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar, Boolean isTainted) {
         // Check if the character has at least one dot in the associated mega-attribute
-        // (Assuming enhancements are associated with mega-attributes)
-        // Example: if (character.getMegaAttributeDexterity() >= 1) {
+        MegaAttribute megaAttribute = character.getMegaAttributes().stream()
+                .filter(attr -> attr.getName().equalsIgnoreCase(megaAttributeName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Mega-Attribute not found: " + megaAttributeName));
 
-        // Purchase enhancements
-        for (int i = 0; i < enhancementsToPurchase; i++) {
-            // Create and add the enhancement to the character
-            Enhancement enhancement = new Enhancement();
-            // Set enhancement properties as needed
-            // Example: enhancement.setMegaAttribute(character.getMegaAttributeDexterity());
-            // Add enhancement to character's list of enhancements
-            character.getEnhancements().add(enhancement);
+        // Is this character creation or increase through exp
+        int pointsToSpend = isNewChar ? character.getNovaPoints() : character.getExperiencePoints();
+        int cost;
+        if (isNewChar) {
+            if (isTainted) cost = 2;
+            else cost = 3;
+        } else {
+            if (isTainted) cost = 3;
+            else cost = 5;
         }
-        // Deduct nova points spent
-        character.setNovaPoints(character.getNovaPoints() - 3);
+
+        // Check to see if character has sufficient funds
+        if (pointsToSpend < cost) {
+            throw new IllegalArgumentException("Insufficient points to spend");
+        }
+
+        // Create enhancement and add it to character
+        Enhancement newEnhancement = new Enhancement();
+        newEnhancement.setCharacter(character);
+        newEnhancement.setMegaAttribute(megaAttribute);
+        newEnhancement.setName(enhancementName);
+        character.getEnhancements().add(newEnhancement);
+
+        // Deduct points spent
+        if (isNewChar) {
+            character.setNovaPoints(character.getNovaPoints() - cost);
+        } else {
+            character.setExperiencePoints(character.getExperiencePoints() - cost);
+        }
     }
-*/
 
 }

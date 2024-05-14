@@ -61,7 +61,7 @@ public class Character {
     private int quantum = 1;
 
     @Column(name = "quantum_pool")
-    private int quantumPool;
+    private int quantumPool = 22;
 
     @Column(name = "initiative")
     private int initiative;
@@ -109,6 +109,9 @@ public class Character {
 
     @OneToMany(mappedBy = "character")
     private List<Merit> merits;
+
+    @OneToMany(mappedBy = "character")
+    private List<Taint> taints;
 
     @OneToMany(mappedBy = "character")
     private List<Enhancement> enhancements;
