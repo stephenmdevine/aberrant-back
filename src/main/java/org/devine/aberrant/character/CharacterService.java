@@ -55,4 +55,6 @@ public interface CharacterService {
     void increasePower(Character character, String powerName, int level, int quantumMinimum, String attributeName,
                        Boolean hasExtra, String extraName, Boolean isNewChar, Boolean isTainted);
 
+    void increaseQuantumPool(Character character);
+
 }

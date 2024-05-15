@@ -738,7 +738,20 @@ public class CharacterServiceImpl implements CharacterService {
         } else {
             character.setExperiencePoints(character.getExperiencePoints() - cost);
         }
+    }
 
+    @Override
+    public void increaseQuantumPool(Character character) {
+        // Check to see if character has sufficient funds
+        if (character.getNovaPoints() < 1) {
+            throw new IllegalArgumentException("Insufficient points to spend");
+        }
+
+        // Increase quantum pool value
+        character.setQuantumPool(character.getQuantumPool() + 2);
+
+        // Deduct points spent
+        character.setNovaPoints(character.getNovaPoints() - 1);
     }
 
 }
