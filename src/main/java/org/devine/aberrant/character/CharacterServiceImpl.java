@@ -475,6 +475,8 @@ public class CharacterServiceImpl implements CharacterService {
         // Increase Quantum value and Quantum pool, if necessary
         character.setQuantum(character.getQuantum() + 1);
         if (isNewChar) character.setQuantumPool(character.getQuantumPool() + 2);
+        if (isTainted) character.setTaint(character.getTaint() + 1);
+        if (character.getQuantum() >= 5) character.setTaint(character.getTaint() + 1);
 
         // Deduct points spent
         if (isNewChar) {
@@ -608,6 +610,7 @@ public class CharacterServiceImpl implements CharacterService {
         }
         // Increase mega-attribute value
         megaAttribute.setValue(currentMegaAttributeValue + 1);
+        if (isTainted) character.setTaint(character.getTaint() + 1);
         // Deduct points spent
         if (isNewChar) {
             character.setNovaPoints(character.getNovaPoints() - cost);
@@ -646,6 +649,7 @@ public class CharacterServiceImpl implements CharacterService {
         newEnhancement.setMegaAttribute(megaAttribute);
         newEnhancement.setName(enhancementName);
         character.getEnhancements().add(newEnhancement);
+        if (isTainted) character.setTaint(character.getTaint() + 1);
 
         // Deduct points spent
         if (isNewChar) {

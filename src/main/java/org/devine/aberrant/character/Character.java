@@ -66,6 +66,9 @@ public class Character {
     @Column(name = "initiative")
     private int initiative;
 
+    @Column(name = "taint")
+    private int taint = 0;
+
 // Character Point Info
     @Column(name = "attribute_points")
     private int attributePoints;
@@ -109,9 +112,6 @@ public class Character {
 
     @OneToMany(mappedBy = "character")
     private List<Merit> merits;
-
-    @OneToMany(mappedBy = "character")
-    private List<Taint> taints;
 
     @OneToMany(mappedBy = "character")
     private List<Enhancement> enhancements;
