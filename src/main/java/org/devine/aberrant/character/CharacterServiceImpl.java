@@ -9,6 +9,7 @@ import org.devine.aberrant.attribute.Quality;
 import org.devine.aberrant.background.Background;
 import org.devine.aberrant.megaAttribute.Enhancement;
 import org.devine.aberrant.megaAttribute.MegaAttribute;
+import org.devine.aberrant.power.Power;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -396,8 +397,12 @@ public class CharacterServiceImpl implements CharacterService {
         if (character.getBackgroundValue(backgroundName) >= 5) {
             throw new IllegalArgumentException("Background value must be less than or equal to 5");
         }
-        // Increase background value
+        // Increase background value and add taint, if necessary
         background.setValue(currentBackgroundValue + 1);
+        if (background.getName().equalsIgnoreCase("node") && background.getValue() >= 3) {
+            character.setTaint(character.getTaint() + 1);
+        }
+
         // Deduct points spent
         if (isNewChar) {
             if (isNova) {
@@ -657,6 +662,83 @@ public class CharacterServiceImpl implements CharacterService {
         } else {
             character.setExperiencePoints(character.getExperiencePoints() - cost);
         }
+    }
+
+    @Override
+    public void increasePower(Character character, String powerName, int level, int quantumMinimum, String attributeName,
+                              Boolean hasExtra, String extraName, Boolean isNewChar, Boolean isTainted) {
+        // Find the attribute by name
+        Attribute attribute = character.getAttributes().stream()
+                .filter(attr -> attr.getName().equalsIgnoreCase(attributeName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Attribute not found: " + attributeName)); // TODO should return N/A for no attribute
+
+        int powerLevel;
+        if (hasExtra) {
+            powerLevel = level + 1;
+        }   else {
+            powerLevel = level;
+        }
+        // Find the power by name or initialize new power
+        Power power = character.getPowers().stream()
+                .filter(pwr -> pwr.getName().equalsIgnoreCase(powerName))
+                .findFirst().orElseGet(() -> {
+                    Power newPower = new Power();
+                    newPower.setName(powerName);
+                    newPower.setValue(0);
+                    newPower.setLevel(powerLevel);
+                    newPower.setQuantumMinimum(quantumMinimum);
+                    newPower.setHasExtra(hasExtra);
+                    newPower.setExtraName(extraName);
+                    newPower.setCharacter(character);
+                    newPower.setAttribute(attribute);
+                    return newPower;
+                });
+
+        // Get the current power's value
+        int currentPowerValue = character.getPowerValue(powerName);
+
+        // Is this character creation or increase through exp
+        int pointsToSpend = isNewChar ? character.getNovaPoints() : character.getExperiencePoints();
+        int cost;
+        int novaPtCost = (int) (Math.pow(2, (powerLevel - 1)) + 1);
+        int expMultiplier = (powerLevel * 2) + 1;
+        double costDouble;
+        if (isNewChar) {
+            if (isTainted) cost = powerLevel;
+            else cost = novaPtCost;
+        } else {
+            if (currentPowerValue == 0) {
+                if (isTainted) {
+                    cost = (int) Math.round((float) (powerLevel * 3) / 2);
+                } else cost = powerLevel * 3;
+            } else {
+                costDouble = (double) (currentPowerValue * expMultiplier) / (isTainted ? 2 : 1);
+                cost = (int) Math.round(costDouble);
+            }
+        }
+
+        // Check to see if character has sufficient funds
+        if (pointsToSpend < cost) {
+            throw new IllegalArgumentException("Insufficient points to spend");
+        }
+        // Checks that a character has the minimum Quantum for the power
+        if (quantumMinimum > (character.getQuantum())) {
+            throw new IllegalArgumentException("Power's Quantum minimum exceeds character's current Quantum");
+        }
+        // Increase power value
+        power.setValue(currentPowerValue + 1);
+        if (isTainted && powerLevel == 1) {
+            power.setValue(character.getPowerValue(powerName) + 1);
+        }
+        if (isTainted) character.setTaint(character.getTaint() + 1);
+        // Deduct points spent
+        if (isNewChar) {
+            character.setNovaPoints(character.getNovaPoints() - cost);
+        } else {
+            character.setExperiencePoints(character.getExperiencePoints() - cost);
+        }
+
     }
 
 }

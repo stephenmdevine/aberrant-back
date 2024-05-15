@@ -202,4 +202,16 @@ public class Character {
         return 0; // Default value if attribute not found
     }
 
+//      Method to retrieve the value of a specific power by name
+    public int getPowerValue(String powerName) {
+        // Iterate through the list of powers
+        for (Power power : powers) {
+            if (power.getName().equalsIgnoreCase(powerName)) {
+                return power.getValue();
+            }
+        }
+        // Return a default value or handle the case when the attribute is not found
+        return 0; // Default value if attribute not found
+    }
+
 }

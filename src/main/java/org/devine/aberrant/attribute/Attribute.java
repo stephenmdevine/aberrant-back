@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.devine.aberrant.character.Character;
+import org.devine.aberrant.power.Power;
 
 import java.util.List;
 
@@ -38,5 +39,8 @@ public class Attribute {
 
     @OneToMany(mappedBy = "attribute")
     private List<Quality> qualities;
+
+    @OneToMany(mappedBy = "attribute")
+    private List<Power> powers;
 
 }

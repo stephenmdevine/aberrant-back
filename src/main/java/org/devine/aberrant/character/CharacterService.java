@@ -52,4 +52,7 @@ public interface CharacterService {
 
     void addEnhancement(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar, Boolean isTainted);
 
+    void increasePower(Character character, String powerName, int level, int quantumMinimum, String attributeName,
+                       Boolean hasExtra, String extraName, Boolean isNewChar, Boolean isTainted);
+
 }
