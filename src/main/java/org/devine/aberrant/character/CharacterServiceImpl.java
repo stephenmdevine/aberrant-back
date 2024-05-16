@@ -3,6 +3,7 @@ package org.devine.aberrant.character;
 import jakarta.persistence.EntityNotFoundException;
 import org.devine.aberrant.ability.Ability;
 import org.devine.aberrant.ability.Specialty;
+import org.devine.aberrant.attribute.AllocateAttributePointsRequest;
 import org.devine.aberrant.attribute.Attribute;
 import org.devine.aberrant.attribute.AttributeSet;
 import org.devine.aberrant.attribute.Quality;
@@ -25,33 +26,24 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public Character createCharacter(String name,
-                                     String player,
-                                     String novaName,
-                                     String concept,
-                                     String nature,
-                                     String allegiance,
-                                     String description,
-                                     int attributePoints,
-                                     int abilityPoints,
-                                     int backgroundPoints,
-                                     int bonusPoints,
-                                     int novaPoints,
-                                     int experiencePoints) {
+    public Character createCharacter(CharacterCreationRequest request) {
+        // Create a new character entity using the data from the request
         Character character = new Character();
-        character.setName(name);
-        character.setPlayer(player);
-        character.setNovaName(novaName);
-        character.setConcept(concept);
-        character.setNature(nature);
-        character.setAllegiance(allegiance);
-        character.setDescription(description);
-        character.setAttributePoints(attributePoints);
-        character.setAbilityPoints(abilityPoints);
-        character.setBackgroundPoints(backgroundPoints);
-        character.setBonusPoints(bonusPoints);
-        character.setNovaPoints(novaPoints);
-        character.setExperiencePoints(experiencePoints);
+        character.setName(request.getName());
+        character.setPlayer(request.getPlayer());
+        character.setNovaName(request.getNovaName());
+        character.setConcept(request.getConcept());
+        character.setNature(request.getNature());
+        character.setAllegiance(request.getAllegiance());
+        character.setDescription(request.getDescription());
+        character.setAttributePoints(request.getAttributePoints());
+        character.setAbilityPoints(request.getAbilityPoints());
+        character.setBackgroundPoints(request.getBackgroundPoints());
+        character.setBonusPoints(request.getBonusPoints());
+        character.setNovaPoints(request.getNovaPoints());
+        character.setExperiencePoints(request.getExperiencePoints());
+
+        // Save the character entity in the database
         return characterRepository.save(character);
     }
 
@@ -65,20 +57,20 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public Character allocateAttributePoints(Character character, AttributeSet attributeSet, Map<String, Integer> attributeValues, Map<String, String> qualityDetails) throws IllegalArgumentException {
+    public Character allocateAttributePoints(Character character, AllocateAttributePointsRequest request) throws IllegalArgumentException {
         // Validate if the character has enough attribute points
-        int totalPointsAllocated = attributeValues.values().stream().mapToInt(Integer::intValue).sum();
+        int totalPointsAllocated = request.getAttributeValues().values().stream().mapToInt(Integer::intValue).sum();
         if (totalPointsAllocated > character.getAttributePoints()) {
             throw new IllegalArgumentException("Insufficient attribute points");
         }
 
         // Iterate over attribute values and update the corresponding attributes in the attribute set
-        for (Map.Entry<String, Integer> entry : attributeValues.entrySet()) {
+        for (Map.Entry<String, Integer> entry : request.getAttributeValues().entrySet()) {
             String attributeName = entry.getKey();
             int attributeValue = entry.getValue();
 
             // Find the attribute with the given name in the attribute set
-            Attribute attribute = attributeSet.getAttributes().stream()
+            Attribute attribute = character.getAttributes().stream()
                     .filter(attr -> attr.getName().equalsIgnoreCase(attributeName))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Attribute not found: " + attributeName));
@@ -94,9 +86,11 @@ public class CharacterServiceImpl implements CharacterService {
             // Check if the attribute value is 4 or higher
             if (attributeValue >= 4) {
                 // Create a new Quality with user-defined name and description
+                String qualityName = request.getQualityDetails().getOrDefault(attributeName + "_name", "High " + attributeName);
+                String qualityDescription = request.getQualityDetails().getOrDefault(attributeName + "_description", "A quality associated with a high " + attributeName + " attribute value.");
                 Quality quality = new Quality();
-                quality.setName(qualityDetails.getOrDefault(attributeName + "_name", "High " + attributeName));
-                quality.setDescription(qualityDetails.getOrDefault(attributeName + "_description", "A quality associated with a high " + attributeName + " attribute value."));
+                quality.setName(qualityName);
+                quality.setDescription(qualityDescription);
                 quality.setAttribute(attribute);
 
                 attribute.getQualities().add(quality);
@@ -152,24 +146,6 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public Character addSpecialtyToAbility(Character character, String abilityName, String specialtyName) {
-        // Find the ability by name
-        Ability ability = character.getAbilities().stream()
-                .filter(a -> a.getName().equalsIgnoreCase(abilityName))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Ability not found: " + abilityName));
-
-        // Create and add the specialty
-        Specialty specialty = new Specialty();
-        specialty.setName(specialtyName);
-        specialty.setAbility(ability);
-        ability.getSpecialties().add(specialty);
-
-        // Save the changes to the character and return
-        return characterRepository.save(character);
-    }
-
-    @Override
     public Character allocateBackgroundPoints(Character character, Map<String, Integer> backgroundValues) throws IllegalArgumentException {
         // Validate total points allocated
         int totalPointsAllocated = backgroundValues.values().stream().mapToInt(Integer::intValue).sum();
@@ -206,7 +182,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void increaseAttribute(Character character, String attributeName, Boolean isNewChar, Boolean isNova) {
+    public void increaseAttribute(Character character, String attributeName, String qualityName, Boolean isNewChar, Boolean isNova) throws IllegalArgumentException {
         // Find the attribute by name
         Attribute attribute = character.getAttributes().stream()
                 .filter(attr -> attr.getName().equalsIgnoreCase(attributeName))
@@ -245,6 +221,13 @@ public class CharacterServiceImpl implements CharacterService {
         }
         // Increase attribute value
         attribute.setValue(currentAttributeValue + 1);
+        // Check if the attribute value is 4 or higher
+        if (character.getAttributeValue(attributeName) == 4) {
+            Quality quality = new Quality();
+            quality.setName(qualityName);
+            quality.setAttribute(attribute);
+            attribute.getQualities().add(quality);
+        }
         // Deduct points spent
         if (isNewChar) {
             if (isNova) {
@@ -259,7 +242,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void increaseAbility(Character character, String abilityName, Boolean isNewChar, Boolean isNova) {
+    public void increaseAbility(Character character, String abilityName, Boolean isNewChar, Boolean isNova) throws IllegalArgumentException {
         // Find the ability by name
         Ability ability = character.getAbilities().stream()
                 .filter(abil -> abil.getName().equalsIgnoreCase(abilityName))
@@ -317,7 +300,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void addAbilitySpecialty(Character character, String abilityName, String specialtyName, Boolean isNewChar) {
+    public void addAbilitySpecialty(Character character, String abilityName, String specialtyName, Boolean isNewChar) throws IllegalArgumentException {
         // Find the ability by name
         Ability ability = character.getAbilities().stream()
                 .filter(abil -> abil.getName().equalsIgnoreCase(abilityName))
@@ -355,7 +338,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void increaseBackground(Character character, String backgroundName, Boolean isNewChar, Boolean isNova) {
+    public void increaseBackground(Character character, String backgroundName, Boolean isNewChar, Boolean isNova) throws IllegalArgumentException {
         // Find the background by name
         Background background = character.getBackgrounds().stream()
                 .filter(bkgr -> bkgr.getName().equalsIgnoreCase(backgroundName))
@@ -417,7 +400,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void increaseWillpower(Character character, Boolean isNewChar, Boolean isNova) {
+    public void increaseWillpower(Character character, Boolean isNewChar, Boolean isNova) throws IllegalArgumentException {
         // Is this character creation or increase through exp
         int pointsToSpend;
         if (isNewChar) {
@@ -455,7 +438,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void increaseQuantum(Character character, Boolean isNewChar, Boolean isNova, Boolean isTainted) {
+    public void increaseQuantum(Character character, Boolean isNewChar, Boolean isNova, Boolean isTainted) throws IllegalArgumentException {
         // Is this character creation or increase through exp
         int pointsToSpend;
         if (isNewChar) {
@@ -497,7 +480,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void increaseInitiative(Character character, Boolean isNewChar) {
+    public void increaseInitiative(Character character, Boolean isNewChar) throws IllegalArgumentException {
         // Is this character creation or increase through exp
         int pointsToSpend;
         if (isNewChar) {
@@ -526,7 +509,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void addMerit(Character character, String meritName, int meritValue) {
+    public void addMerit(Character character, String meritName, int meritValue) throws IllegalArgumentException {
         // Check to see if character has sufficient funds
         if (meritValue < character.getBonusPoints()) {
             throw new IllegalArgumentException("Insufficient points to spend");
@@ -543,7 +526,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void addFlaw(Character character, String flawName, int flawValue) {
+    public void addFlaw(Character character, String flawName, int flawValue) throws IllegalArgumentException {
         // Check if the total flaw points exceed 10
         int totalFlawPoints = character.getFlaws().stream().mapToInt(Flaw::getValue).sum();
         if (totalFlawPoints + flawValue > 10) {
@@ -561,7 +544,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void increaseMegaAttribute(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar, Boolean isTainted) {
+    public void increaseMegaAttribute(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar, Boolean isTainted) throws IllegalArgumentException {
         // Find the attribute by name or initialize new mega-attribute
         MegaAttribute megaAttribute = character.getMegaAttributes().stream()
                 .filter(attr -> attr.getName().equalsIgnoreCase(megaAttributeName))
@@ -625,7 +608,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void addEnhancement(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar, Boolean isTainted) {
+    public void addEnhancement(Character character, String megaAttributeName, String enhancementName, Boolean isNewChar, Boolean isTainted) throws IllegalArgumentException {
         // Check if the character has at least one dot in the associated mega-attribute
         MegaAttribute megaAttribute = character.getMegaAttributes().stream()
                 .filter(attr -> attr.getName().equalsIgnoreCase(megaAttributeName))
@@ -666,7 +649,7 @@ public class CharacterServiceImpl implements CharacterService {
 
     @Override
     public void increasePower(Character character, String powerName, int level, int quantumMinimum, String attributeName,
-                              Boolean hasExtra, String extraName, Boolean isNewChar, Boolean isTainted) {
+                              Boolean hasExtra, String extraName, Boolean isNewChar, Boolean isTainted) throws IllegalArgumentException {
         // Find the attribute by name
         Attribute attribute = character.getAttributes().stream()
                 .filter(attr -> attr.getName().equalsIgnoreCase(attributeName))
@@ -741,7 +724,7 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public void increaseQuantumPool(Character character) {
+    public void increaseQuantumPool(Character character) throws IllegalArgumentException {
         // Check to see if character has sufficient funds
         if (character.getNovaPoints() < 1) {
             throw new IllegalArgumentException("Insufficient points to spend");
