@@ -1,5 +1,6 @@
 package org.devine.aberrant.character;
 
+import org.devine.aberrant.ability.AllocateAbilityPointsRequest;
 import org.devine.aberrant.attribute.AllocateAttributePointsRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,24 @@ public class CharacterController {
             @PathVariable Long characterId,
             @RequestBody AllocateAttributePointsRequest request) {
         Character character = characterService.allocateAttributePoints(characterService.findById(characterId), request);
+        return ResponseEntity.ok(character);
+    }
+
+    // Endpoint to allocate ability points
+    @PostMapping("/{characterId}/allocateAbilityPoints")
+    public ResponseEntity<Character> allocateAbilityPoints(
+            @PathVariable Long characterId,
+            @RequestBody AllocateAbilityPointsRequest request) {
+        Character character = characterService.allocateAbilityPoints(characterService.findById(characterId), request);
+        return ResponseEntity.ok(character);
+    }
+
+    // Endpoint to allocate background points
+    @PostMapping("/{characterId}/allocateBackgroundPoints")
+    public ResponseEntity<Character> allocateBackgroundPoints(
+            @PathVariable Long characterId,
+            @RequestBody AllocateBackgroundPointsRequest request) {
+        Character character = characterService.allocateBackgroundPoints(characterService.findById(characterId), request);
         return ResponseEntity.ok(character);
     }
 

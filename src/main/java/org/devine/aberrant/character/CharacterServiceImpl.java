@@ -2,6 +2,7 @@ package org.devine.aberrant.character;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.devine.aberrant.ability.Ability;
+import org.devine.aberrant.ability.AllocateAbilityPointsRequest;
 import org.devine.aberrant.ability.Specialty;
 import org.devine.aberrant.attribute.AllocateAttributePointsRequest;
 import org.devine.aberrant.attribute.Attribute;
@@ -110,15 +111,15 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public Character allocateAbilityPoints(Character character, Map<String, Integer> abilityValues) throws IllegalArgumentException {
+    public Character allocateAbilityPoints(Character character, AllocateAbilityPointsRequest request) throws IllegalArgumentException {
         // Validate total points allocated
-        int totalPointsAllocated = abilityValues.values().stream().mapToInt(Integer::intValue).sum();
+        int totalPointsAllocated = request.getAbilityValues().values().stream().mapToInt(Integer::intValue).sum();
         if (totalPointsAllocated > character.getAbilityPoints()) {
             throw new IllegalArgumentException("Insufficient ability points");
         }
 
         // Iterate over the provided ability values
-        for (Map.Entry<String, Integer> entry : abilityValues.entrySet()) {
+        for (Map.Entry<String, Integer> entry : request.getAbilityValues().entrySet()) {
             String abilityName = entry.getKey();
             int abilityValue = entry.getValue();
 
@@ -146,15 +147,15 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
     @Override
-    public Character allocateBackgroundPoints(Character character, Map<String, Integer> backgroundValues) throws IllegalArgumentException {
+    public Character allocateBackgroundPoints(Character character, AllocateBackgroundPointsRequest request) throws IllegalArgumentException {
         // Validate total points allocated
-        int totalPointsAllocated = backgroundValues.values().stream().mapToInt(Integer::intValue).sum();
+        int totalPointsAllocated = request.getBackgroundValues().values().stream().mapToInt(Integer::intValue).sum();
         if (totalPointsAllocated > character.getBackgroundPoints()) {
             throw new IllegalArgumentException("Insufficient ability points");
         }
 
         // Iterate over the provided background values
-        for (Map.Entry<String, Integer> entry : backgroundValues.entrySet()) {
+        for (Map.Entry<String, Integer> entry : request.getBackgroundValues().entrySet()) {
             String backgroundName = entry.getKey();
             int backgroundValue = entry.getValue();
 

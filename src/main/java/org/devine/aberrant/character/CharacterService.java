@@ -1,5 +1,6 @@
 package org.devine.aberrant.character;
 
+import org.devine.aberrant.ability.AllocateAbilityPointsRequest;
 import org.devine.aberrant.attribute.AllocateAttributePointsRequest;
 import org.devine.aberrant.attribute.AttributeSet;
 
@@ -13,9 +14,9 @@ public interface CharacterService {
 
     Character allocateAttributePoints(Character character, AllocateAttributePointsRequest request) throws IllegalArgumentException;
 
-    Character allocateAbilityPoints(Character character, Map<String, Integer> abilityValues) throws IllegalArgumentException;
+    Character allocateAbilityPoints(Character character, AllocateAbilityPointsRequest request) throws IllegalArgumentException;
 
-    Character allocateBackgroundPoints(Character character, Map<String, Integer> backgroundValues) throws IllegalArgumentException;
+    Character allocateBackgroundPoints(Character character, AllocateBackgroundPointsRequest request) throws IllegalArgumentException;
 
     void increaseAttribute(Character character, String attributeName, String qualityName, Boolean isNewChar, Boolean isNova) throws IllegalArgumentException;
 
