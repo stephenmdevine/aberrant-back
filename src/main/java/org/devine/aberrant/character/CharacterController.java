@@ -2,6 +2,7 @@ package org.devine.aberrant.character;
 
 import org.devine.aberrant.ability.AllocateAbilityPointsRequest;
 import org.devine.aberrant.attribute.AllocateAttributePointsRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import java.util.Map;
 @RequestMapping("/characters")
 public class CharacterController {
 
+    @Autowired
     private final CharacterService characterService;
 
     public CharacterController(CharacterService characterService) {
