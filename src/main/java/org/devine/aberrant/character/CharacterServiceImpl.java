@@ -738,4 +738,9 @@ public class CharacterServiceImpl implements CharacterService {
         character.setNovaPoints(character.getNovaPoints() - 1);
     }
 
+    @Override
+    public Character saveCharacter(Character character) {
+        return characterRepository.save(character);
+    }
+
 }

@@ -45,4 +45,6 @@ public interface CharacterService {
 
     void increaseQuantumPool(Character character) throws IllegalArgumentException;
 
+    Character saveCharacter(Character character);
+
 }

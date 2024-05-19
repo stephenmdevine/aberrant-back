@@ -59,4 +59,78 @@ public class CharacterController {
         return ResponseEntity.ok(character);
     }
 
+    @PostMapping("/{characterId}/spendBonusPoints")
+    public ResponseEntity<Character> spendBonusPoints(
+            @PathVariable Long characterId,
+            @RequestBody SpendPointsRequest request) {
+        Character character = characterService.findById(characterId);
+        character = handlePointSpending(character, request, true, false);
+        return ResponseEntity.ok(character);
+    }
+
+    @PostMapping("/{characterId}/spendNovaPoints")
+    public ResponseEntity<Character> spendNovaPoints(
+            @PathVariable Long characterId,
+            @RequestBody SpendPointsRequest request) {
+        Character character = characterService.findById(characterId);
+        character = handlePointSpending(character, request, false, true);
+        return ResponseEntity.ok(character);
+    }
+
+    @PostMapping("/{characterId}/spendExperiencePoints")
+    public ResponseEntity<Character> spendExperiencePoints(
+            @PathVariable Long characterId,
+            @RequestBody SpendPointsRequest request) {
+        Character character = characterService.findById(characterId);
+        character = handlePointSpending(character, request, false, false);
+        return ResponseEntity.ok(character);
+    }
+
+    private Character handlePointSpending(Character character, SpendPointsRequest request, boolean isBonus, boolean isNova) {
+        switch (request.getPointType().toLowerCase()) {
+            case "attribute":
+                characterService.increaseAttribute(character, request.getName(), request.getQualityName(), isBonus, isNova);
+                break;
+            case "ability":
+                characterService.increaseAbility(character, request.getName(), isBonus, isNova);
+                break;
+            case "background":
+                characterService.increaseBackground(character, request.getName(), isBonus, isNova);
+                break;
+            case "willpower":
+                characterService.increaseWillpower(character, isBonus, isNova);
+                break;
+            case "quantum":
+                characterService.increaseQuantum(character, isBonus, isNova, request.isTainted());
+                break;
+            case "initiative":
+                characterService.increaseInitiative(character, isBonus);
+                break;
+            case "merit":
+                characterService.addMerit(character, request.getName(), request.getValue());
+                break;
+            case "flaw":
+                characterService.addFlaw(character, request.getName(), request.getValue());
+                break;
+            case "megaattribute":
+                characterService.increaseMegaAttribute(character, request.getName(), request.getEnhancementName(), isBonus, request.isTainted());
+                break;
+            case "enhancement":
+                characterService.addEnhancement(character, request.getName(), request.getExtraName(), isBonus, request.isTainted());
+                break;
+            case "power":
+                characterService.increasePower(character, request.getName(), request.getValue(), request.getQuantumMinimum(), request.getAttributeName(), request.isHasExtra(), request.getExtraName(), isBonus, request.isTainted());
+                break;
+            case "abilityspecialty":
+                characterService.addAbilitySpecialty(character, request.getName(), request.getSpecialtyName(), isBonus);
+                break;
+            case "quantumpool":
+                characterService.increaseQuantumPool(character);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid point type");
+        }
+        return characterService.saveCharacter(character); // Assuming you have a saveCharacter method to persist changes
+    }
+
 }
