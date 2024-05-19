@@ -35,7 +35,7 @@ public class MegaAttribute {
     @JoinColumn(name = "character_id")
     private Character character;
 
-    @OneToMany(mappedBy = "mega_attribute")
+    @OneToMany(mappedBy = "megaAttribute")
     private List<Enhancement> enhancements;
 
 }

@@ -16,6 +16,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "game_character")
 public class Character {
 
     @Id
@@ -64,7 +65,7 @@ public class Character {
     private int quantumPool = 22;
 
     @Column(name = "initiative")
-    private int initiative;
+    private int initiative = 0;
 
     @Column(name = "taint")
     private int taint = 0;
@@ -116,10 +117,7 @@ public class Character {
     @OneToMany(mappedBy = "character")
     private List<Enhancement> enhancements;
 
-    public Character() {
-//        Calculate initial initiative based on Dex and Wits
-        this.initiative = this.getAttributeValue("Dexterity") + this.getAttributeValue("Wits");
-    }
+    public Character() {}
 
 //     Method to retrieve the value of a specific attribute by name
     public int getAttributeValue(String attributeName) {
