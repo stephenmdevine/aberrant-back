@@ -108,10 +108,10 @@ public class Character {
     @OneToMany(mappedBy = "character")
     private List<Power> powers;
 
-    @OneToMany(mappedBy = "character")
+    @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Flaw> flaws;
 
-    @OneToMany(mappedBy = "character")
+    @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Merit> merits;
 
     @OneToMany(mappedBy = "character")

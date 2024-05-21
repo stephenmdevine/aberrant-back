@@ -37,7 +37,7 @@ public class Attribute {
     @JoinColumn(name = "character_id")
     private Character character;
 
-    @OneToMany(mappedBy = "attribute")
+    @OneToMany(mappedBy = "attribute", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Quality> qualities;
 
     @OneToMany(mappedBy = "attribute")

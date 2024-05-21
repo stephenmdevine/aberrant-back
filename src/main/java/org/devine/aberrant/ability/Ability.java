@@ -3,7 +3,6 @@ package org.devine.aberrant.ability;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import org.devine.aberrant.attribute.Attribute;
 import org.devine.aberrant.character.Character;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class Ability {
     @NotNull
     private Character character;
 
-    @OneToMany(mappedBy = "ability")
+    @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Specialty> specialties;
 
 }
