@@ -14,4 +14,10 @@ public class Combat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String health;
+
+    private int movementWalk;
+    private int movementRun;
+    private int movementSprint;
+
 }
