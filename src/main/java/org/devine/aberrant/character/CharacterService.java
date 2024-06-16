@@ -2,13 +2,14 @@ package org.devine.aberrant.character;
 
 import org.devine.aberrant.ability.AllocateAbilityPointsRequest;
 import org.devine.aberrant.attribute.AllocateAttributePointsRequest;
-import org.devine.aberrant.attribute.AttributeSet;
 
-import java.util.Map;
+import java.util.List;
 
 public interface CharacterService {
 
     Character createCharacter(CharacterCreationRequest request);
+
+    List<Character> findAll();
 
     Character findById(Long characterId);
 

@@ -6,7 +6,6 @@ import org.devine.aberrant.ability.AllocateAbilityPointsRequest;
 import org.devine.aberrant.ability.Specialty;
 import org.devine.aberrant.attribute.AllocateAttributePointsRequest;
 import org.devine.aberrant.attribute.Attribute;
-import org.devine.aberrant.attribute.AttributeSet;
 import org.devine.aberrant.attribute.Quality;
 import org.devine.aberrant.background.Background;
 import org.devine.aberrant.megaAttribute.Enhancement;
@@ -14,6 +13,7 @@ import org.devine.aberrant.megaAttribute.MegaAttribute;
 import org.devine.aberrant.power.Power;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -55,6 +55,11 @@ public class CharacterServiceImpl implements CharacterService {
 
         // If the character is found, return it; otherwise, throw an exception
         return characterOptional.orElseThrow(() -> new EntityNotFoundException("Character not found with id: " + characterId));
+    }
+
+    @Override
+    public List<Character> findAll() {
+        return characterRepository.findAll();
     }
 
     @Override
