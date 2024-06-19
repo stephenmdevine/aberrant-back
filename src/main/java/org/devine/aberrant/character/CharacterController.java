@@ -22,7 +22,7 @@ public class CharacterController {
         this.characterService = characterService;
     }
 
-    @GetMapping
+    @GetMapping("/")
     List<Character> getAllCharacters() {
         return characterService.findAll();
     }
