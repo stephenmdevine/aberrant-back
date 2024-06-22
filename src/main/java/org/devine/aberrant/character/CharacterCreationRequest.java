@@ -1,4 +1,4 @@
-package org.devine.aberrant.character;
+/*package org.devine.aberrant.character;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -45,3 +45,4 @@ public class CharacterCreationRequest {
 
     // Getters and setters
 }
+*/

@@ -1,4 +1,4 @@
-package org.devine.aberrant.background;
+/*package org.devine.aberrant.background;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -31,3 +31,4 @@ public class Background {
     private Character character;
 
 }
+*/

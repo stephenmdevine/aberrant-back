@@ -1,4 +1,4 @@
-package org.devine.aberrant.attribute;
+/*package org.devine.aberrant.attribute;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -25,3 +25,4 @@ public class AttributeSet {
     private Character character;
 
 }
+*/

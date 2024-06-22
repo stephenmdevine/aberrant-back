@@ -1,4 +1,4 @@
-package org.devine.aberrant.power;
+/*package org.devine.aberrant.power;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,3 +27,4 @@ public class PowerController {
         return ResponseEntity.ok(power);
     }
 }
+*/

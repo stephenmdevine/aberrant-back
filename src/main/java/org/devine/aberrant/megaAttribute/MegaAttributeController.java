@@ -1,4 +1,4 @@
-package org.devine.aberrant.megaAttribute;
+/*package org.devine.aberrant.megaAttribute;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,3 +29,4 @@ public class MegaAttributeController {
     }
 
 }
+*/

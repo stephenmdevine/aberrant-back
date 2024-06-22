@@ -1,4 +1,4 @@
-package org.devine.aberrant.ability;
+/*package org.devine.aberrant.ability;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -37,3 +37,4 @@ public class Ability {
     private List<Specialty> specialties;
 
 }
+*/

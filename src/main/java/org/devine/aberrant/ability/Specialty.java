@@ -1,4 +1,4 @@
-package org.devine.aberrant.ability;
+/*package org.devine.aberrant.ability;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,3 +18,4 @@ public class Specialty {
     private Ability ability;
 
 }
+*/

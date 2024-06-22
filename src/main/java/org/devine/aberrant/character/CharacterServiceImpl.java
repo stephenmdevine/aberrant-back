@@ -1,4 +1,4 @@
-package org.devine.aberrant.character;
+/*package org.devine.aberrant.character;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.devine.aberrant.ability.Ability;
@@ -104,6 +104,7 @@ public class CharacterServiceImpl implements CharacterService {
                     <input type="text" name="Strength_name" placeholder="Name for Strength Quality">
                     <textarea name="Strength_description" placeholder="Description for Strength Quality"></textarea>
                 */
+/*
             }
         }
 
@@ -749,3 +750,4 @@ public class CharacterServiceImpl implements CharacterService {
     }
 
 }
+*/

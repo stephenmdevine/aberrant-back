@@ -1,4 +1,4 @@
-package org.devine.aberrant.character;
+/*package org.devine.aberrant.character;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -20,3 +20,4 @@ public class Merit {
     private Character character;
 
 }
+*/

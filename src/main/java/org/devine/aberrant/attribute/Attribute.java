@@ -1,4 +1,4 @@
-package org.devine.aberrant.attribute;
+/*package org.devine.aberrant.attribute;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -44,3 +44,4 @@ public class Attribute {
     private List<Power> powers;
 
 }
+*/

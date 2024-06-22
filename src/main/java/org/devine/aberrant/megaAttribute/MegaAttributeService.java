@@ -1,4 +1,4 @@
-package org.devine.aberrant.megaAttribute;
+/*package org.devine.aberrant.megaAttribute;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,3 +22,4 @@ public class MegaAttributeService {
                 .orElseThrow(() -> new IllegalArgumentException("Mega Attribute not found"));
     }
 }
+*/

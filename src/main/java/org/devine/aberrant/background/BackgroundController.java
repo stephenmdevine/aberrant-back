@@ -1,4 +1,4 @@
-package org.devine.aberrant.background;
+/*package org.devine.aberrant.background;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,3 +30,4 @@ public class BackgroundController {
     }
 
 }
+*/

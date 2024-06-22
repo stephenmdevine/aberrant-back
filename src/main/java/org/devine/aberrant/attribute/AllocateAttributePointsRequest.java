@@ -1,4 +1,4 @@
-package org.devine.aberrant.attribute;
+/*package org.devine.aberrant.attribute;
 
 import lombok.Data;
 
@@ -14,3 +14,4 @@ public class AllocateAttributePointsRequest {
     private Map<String, String> qualityDetails; // Maps attribute names to any associated quality details
 
 }
+*/

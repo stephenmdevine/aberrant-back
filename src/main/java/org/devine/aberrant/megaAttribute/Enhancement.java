@@ -1,4 +1,4 @@
-package org.devine.aberrant.megaAttribute;
+/*package org.devine.aberrant.megaAttribute;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -23,3 +23,4 @@ public class Enhancement {
     private Character character;
 
 }
+*/

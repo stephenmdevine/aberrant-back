@@ -1,4 +1,4 @@
-package org.devine.aberrant.attribute;
+/*package org.devine.aberrant.attribute;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,3 +18,4 @@ public class Quality {
     @JoinColumn(name = "attribute_id")
     private Attribute attribute;
 }
+*/

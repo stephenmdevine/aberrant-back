@@ -1,4 +1,4 @@
-package org.devine.aberrant.megaAttribute;
+/*package org.devine.aberrant.megaAttribute;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -39,3 +39,4 @@ public class MegaAttribute {
     private List<Enhancement> enhancements;
 
 }
+*/

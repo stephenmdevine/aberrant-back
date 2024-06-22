@@ -1,4 +1,4 @@
-package org.devine.aberrant.character;
+/*package org.devine.aberrant.character;
 
 import lombok.Data;
 
@@ -9,3 +9,4 @@ public class AllocateBackgroundPointsRequest {
 
     private Map<String, Integer> backgroundValues;
 }
+*/

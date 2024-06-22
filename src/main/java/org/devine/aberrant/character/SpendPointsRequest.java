@@ -1,4 +1,4 @@
-package org.devine.aberrant.character;
+/*package org.devine.aberrant.character;
 
 import lombok.Data;
 
@@ -18,3 +18,4 @@ public class SpendPointsRequest {
     private String specialtyName; // Used for ability specialties
 
 }
+*/

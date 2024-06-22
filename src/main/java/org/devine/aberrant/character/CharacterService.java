@@ -1,4 +1,4 @@
-package org.devine.aberrant.character;
+/*package org.devine.aberrant.character;
 
 import org.devine.aberrant.ability.AllocateAbilityPointsRequest;
 import org.devine.aberrant.attribute.AllocateAttributePointsRequest;
@@ -49,3 +49,4 @@ public interface CharacterService {
     Character saveCharacter(Character character);
 
 }
+*/

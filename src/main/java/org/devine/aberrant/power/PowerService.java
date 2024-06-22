@@ -1,4 +1,4 @@
-package org.devine.aberrant.power;
+/*package org.devine.aberrant.power;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,3 +20,4 @@ public class PowerService {
                 .orElseThrow(() -> new IllegalArgumentException("Power not found"));
     }
 }
+*/

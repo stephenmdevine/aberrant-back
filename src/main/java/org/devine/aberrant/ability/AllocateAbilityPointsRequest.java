@@ -1,4 +1,4 @@
-package org.devine.aberrant.ability;
+/*package org.devine.aberrant.ability;
 
 import lombok.Data;
 
@@ -9,3 +9,4 @@ public class AllocateAbilityPointsRequest {
 
     private Map<String, Integer> abilityValues;
 }
+*/

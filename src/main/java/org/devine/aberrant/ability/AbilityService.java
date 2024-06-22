@@ -1,4 +1,4 @@
-package org.devine.aberrant.ability;
+/*package org.devine.aberrant.ability;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,3 +23,4 @@ public class AbilityService {
     }
 
 }
+*/

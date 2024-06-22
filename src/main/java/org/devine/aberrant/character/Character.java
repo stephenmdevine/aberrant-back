@@ -1,4 +1,4 @@
-package org.devine.aberrant.character;
+/*package org.devine.aberrant.character;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -213,3 +213,4 @@ public class Character {
     }
 
 }
+*/

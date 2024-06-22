@@ -1,4 +1,4 @@
-package org.devine.aberrant.power;
+/*package org.devine.aberrant.power;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -49,3 +49,4 @@ public class Power {
     @JoinColumn(name = "attribute_id")
     private Attribute attribute;
 }
+*/

@@ -1,4 +1,4 @@
-/*package org.devine.aberrant.combat;
+package org.devine.aberrant.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,17 +8,13 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Combat {
+public class GameCharacter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String health;
-
-    private int movementWalk;
-    private int movementRun;
-    private int movementSprint;
+    private String name;
+    private String player;
+    private String novaName;
 
 }
-*/
