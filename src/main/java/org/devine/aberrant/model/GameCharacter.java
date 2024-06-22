@@ -3,6 +3,8 @@ package org.devine.aberrant.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Data
 public class GameCharacter {
@@ -33,23 +35,23 @@ public class GameCharacter {
     private int experiencePoints;
 
 // Relational link to other tables
-//    @OneToMany(mappedBy = "character")
-//    private List<Ability> abilities;
-//    @OneToMany(mappedBy = "character")
+    @OneToMany(mappedBy = "game_character")
+    private List<Ability> abilities;
+//    @OneToMany(mappedBy = "game_character")
 //    private List<Attribute> attributes;
-//    @OneToMany(mappedBy = "character")
+//    @OneToMany(mappedBy = "game_character")
 //    private List<AttributeSet> attributeSets;
-//    @OneToMany(mappedBy = "character")
+//    @OneToMany(mappedBy = "game_character")
 //    private List<Background> backgrounds;
-//    @OneToMany(mappedBy = "character")
+//    @OneToMany(mappedBy = "game_character")
 //    private List<MegaAttribute> megaAttributes;
-//    @OneToMany(mappedBy = "character")
+//    @OneToMany(mappedBy = "game_character")
 //    private List<Power> powers;
-//    @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-//    private List<Flaw> flaws;
-//    @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-//    private List<Merit> merits;
-//    @OneToMany(mappedBy = "character")
+    @OneToMany(mappedBy = "game_character", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Flaw> flaws;
+    @OneToMany(mappedBy = "game_character", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Merit> merits;
+//    @OneToMany(mappedBy = "game_character")
 //    private List<Enhancement> enhancements;
 
     public GameCharacter() {}
@@ -78,27 +80,27 @@ public class GameCharacter {
 //    }
 
     //     Method to retrieve the value of a specific ability by name
-//    public int getAbilityValue(String abilityName) {
-//        // Iterate through the list of abilities
-//        for (Ability ability : abilities) {
-//            if (ability.getName().equalsIgnoreCase(abilityName)) {
-//                return ability.getValue();
-//            }
-//        }
-//        // Return a default value or handle the case when the ability is not found
-//        return 0; // Default value if ability not found
-//    }
+    public int getAbilityValue(String abilityName) {
+        // Iterate through the list of abilities
+        for (Ability ability : abilities) {
+            if (ability.getName().equalsIgnoreCase(abilityName)) {
+                return ability.getValue();
+            }
+        }
+        // Return a default value or handle the case when the ability is not found
+        return 0; // Default value if ability not found
+    }
 
     //     Method to retrieve the number of times any ability was purchased with Nova points
-//    public int getNoOfAbilsBoughtWithNovaPts() {
-//        int total = 0;
-//        // Iterate through the list of attributes
-//        for (Ability ability : abilities) {
-//            total += ability.getNovaPurchased();
-//        }
-//        // Return the total amount of attributes purchased with Nova points
-//        return total;
-//    }
+    public int getNoOfAbilsBoughtWithNovaPts() {
+        int total = 0;
+        // Iterate through the list of attributes
+        for (Ability ability : abilities) {
+            total += ability.getNovaPurchased();
+        }
+        // Return the total amount of attributes purchased with Nova points
+        return total;
+    }
 
     //         Method to retrieve the value of a specific background by name
 //    public int getBackgroundValue(String backgroundName) {

@@ -1,8 +1,7 @@
 package org.devine.aberrant.controller;
 
 import org.devine.aberrant.model.GameCharacter;
-import org.devine.aberrant.repository.GameCharacterRepository;
-import org.devine.aberrant.service.GameCharacterCreationRequest;
+import org.devine.aberrant.request.GameCharacterCreationRequest;
 import org.devine.aberrant.service.GameCharacterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +27,12 @@ public class GameCharacterController {
     @GetMapping
     List<GameCharacter> getAllCharacters() {
         return gameCharacterService.findAll();
+    }
+
+    // Endpoint to retrieve a character by ID
+    @GetMapping("/{gameCharacterId}")
+    GameCharacter getCharacterById(@PathVariable Long id) {
+        return gameCharacterService.findById(id);
     }
 
 }

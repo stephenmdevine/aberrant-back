@@ -1,4 +1,4 @@
-package org.devine.aberrant.service;
+package org.devine.aberrant.request;
 
 import lombok.Data;
 

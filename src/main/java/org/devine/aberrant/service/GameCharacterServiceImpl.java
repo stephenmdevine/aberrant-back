@@ -3,6 +3,7 @@ package org.devine.aberrant.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.devine.aberrant.model.GameCharacter;
 import org.devine.aberrant.repository.GameCharacterRepository;
+import org.devine.aberrant.request.GameCharacterCreationRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

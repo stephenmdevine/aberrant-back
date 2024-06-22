@@ -1,6 +1,7 @@
 package org.devine.aberrant.service;
 
 import org.devine.aberrant.model.GameCharacter;
+import org.devine.aberrant.request.GameCharacterCreationRequest;
 
 import java.util.List;
 
