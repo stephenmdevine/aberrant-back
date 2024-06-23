@@ -3,6 +3,7 @@ package org.devine.aberrant.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,23 +38,23 @@ public class GameCharacter {
 
 // Relational link to other tables
     @OneToMany(mappedBy = "gameCharacter")
-    private List<Ability> abilities;
+    private List<Ability> abilities = new ArrayList<>();
     @OneToMany(mappedBy = "gameCharacter")
-    private List<Attribute> attributes;
+    private List<Attribute> attributes = new ArrayList<>();
     @OneToMany(mappedBy = "gameCharacter")
-    private List<AttributeSet> attributeSets;
+    private List<AttributeSet> attributeSets = new ArrayList<>();
     @OneToMany(mappedBy = "gameCharacter")
-    private List<Background> backgrounds;
+    private List<Background> backgrounds = new ArrayList<>();
     @OneToMany(mappedBy = "gameCharacter")
-    private List<MegaAttribute> megaAttributes;
+    private List<MegaAttribute> megaAttributes = new ArrayList<>();
     @OneToMany(mappedBy = "gameCharacter")
-    private List<Power> powers;
+    private List<Power> powers = new ArrayList<>();
     @OneToMany(mappedBy = "gameCharacter", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Flaw> flaws;
+    private List<Flaw> flaws = new ArrayList<>();
     @OneToMany(mappedBy = "gameCharacter", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Merit> merits;
+    private List<Merit> merits = new ArrayList<>();
     @OneToMany(mappedBy = "gameCharacter")
-    private List<Enhancement> enhancements;
+    private List<Enhancement> enhancements = new ArrayList<>();
 
     public GameCharacter() {}
 

@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/characters")
+@CrossOrigin("http://localhost:3000")
 public class GameCharacterController {
 
     @Autowired
