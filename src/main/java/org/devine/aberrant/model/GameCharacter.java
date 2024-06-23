@@ -22,6 +22,7 @@ public class GameCharacter {
 
 // Additional Character Stats
     private int willpower = 3;
+    private int quantum = 1;
     private int quantumPool = 22;
     private int initiative = 0;
     private int taint = 0;
