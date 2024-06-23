@@ -3,24 +3,20 @@ package org.devine.aberrant.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
-
 @Entity
 @Data
-public class Ability {
+public class Enhancement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private int value;
-    private int novaPurchased;
 
+    @ManyToOne
+    @JoinColumn(name = "mega_attribute_id")
+    private MegaAttribute megaAttribute;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "game_character_id")
     private GameCharacter gameCharacter;
-
-    @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Specialty> specialties;
 
 }

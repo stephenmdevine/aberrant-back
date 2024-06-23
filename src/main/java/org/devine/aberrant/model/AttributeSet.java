@@ -7,20 +7,18 @@ import java.util.List;
 
 @Entity
 @Data
-public class Ability {
+public class AttributeSet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private int value;
-    private int novaPurchased;
+
+    @OneToMany(mappedBy = "attributeSet")
+    private List<Attribute> attributes;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "game_character_id")
     private GameCharacter gameCharacter;
-
-    @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Specialty> specialties;
 
 }

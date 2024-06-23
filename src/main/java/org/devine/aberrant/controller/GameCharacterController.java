@@ -29,10 +29,10 @@ public class GameCharacterController {
         return gameCharacterService.findAll();
     }
 
-    // Endpoint to retrieve a character by ID
+//  Endpoint to retrieve a character by ID
     @GetMapping("/{gameCharacterId}")
-    GameCharacter getCharacterById(@PathVariable Long id) {
-        return gameCharacterService.findById(id);
+    GameCharacter getCharacterById(@PathVariable Long gameCharacterId) {
+        return gameCharacterService.findById(gameCharacterId);
     }
 
 }
